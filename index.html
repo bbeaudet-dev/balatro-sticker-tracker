@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Balatro Joker Stake Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Track your Balatro joker stake sticker collection">
+    <meta name="keywords" content="Balatro, joker, stake, tracker, collection, gold, orange, purple, black, blue, green, red, white">
+    <meta name="author" content="@benbeau">
+    <meta property="og:title" content="Balatro Joker Stake Tracker">
+    <meta property="og:description" content="Track your Balatro joker stake sticker collection">
+    <meta property="og:url" content="https://benbeau.github.io/balatro-calculator">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0" />
+  </head>
+  <body>
+    <div id="mainContainer">
+      <div id="header">
+        <img src="assets/Balatro logo-new.png" alt="Balatro Logo" id="logo">
+        <h1>Sticker Tracker</h1>
+      </div>
+      
+      <div id="controls">
+        <div id="filterControls">
+          <div class="searchGroup">
+            <label for="searchInput">Search Jokers:</label>
+            <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterJokers()">
+          </div>
+          
+          <div class="sortGroup">
+            <label for="sortSelect">Sort by:</label>
+            <select id="sortSelect" onchange="sortJokers()">
+                          <option value="name">Name</option>
+            <option value="none">No Stakes</option>
+            <option value="whiteStake">White Stakes</option>
+            <option value="redStake">Red Stakes</option>
+            <option value="greenStake">Green Stakes</option>
+            <option value="blueStake">Blue Stakes</option>
+            <option value="blackStake">Black Stakes</option>
+            <option value="purpleStake">Purple Stakes</option>
+            <option value="orangeStake">Orange Stakes</option>
+            <option value="goldStake">Gold Stakes</option>
+            </select>
+          </div>
+          
+          <div class="buttonGroup">
+            <button type="button" id="resetBtn" onclick="resetAllStickers()">Reset All</button>
+            <button type="button" id="exportBtn" onclick="exportData()">Export Data</button>
+            <button type="button" id="importBtn" onclick="importData()">Import Data</button>
+            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImportFile(event)">
+          </div>
+        </div>
+        
+        <div id="stats">
+          <div class="stat total">
+            <span class="statLabel">Total</span>
+            <span id="totalJokers" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon noStake"></div>
+            <span id="noStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon whiteStake"></div>
+            <span id="whiteStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon redStake"></div>
+            <span id="redStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon greenStake"></div>
+            <span id="greenStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon blueStake"></div>
+            <span id="blueStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon blackStake"></div>
+            <span id="blackStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon purpleStake"></div>
+            <span id="purpleStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon orangeStake"></div>
+            <span id="orangeStakeCount" class="statValue">0</span>
+          </div>
+          <div class="stat">
+            <div class="stakeIcon goldStake"></div>
+            <span id="goldStakeCount" class="statValue">0</span>
+          </div>
+
+        </div>
+      </div>
+      
+      <div id="progressSection">
+        <div class="progressContainer">
+          <div class="progressLabel">Overall Progress</div>
+          <div class="progressBar">
+            <div class="progressFill" id="overallProgress"></div>
+          </div>
+          <div class="progressText" id="overallProgressText">0 / 1200</div>
+        </div>
+        <div class="progressContainer">
+          <div class="progressLabel">Gold Stakes</div>
+          <div class="progressBar">
+            <div class="progressFill gold" id="goldProgress"></div>
+          </div>
+          <div class="progressText" id="goldProgressText">0 / 150</div>
+        </div>
+      </div>
+      
+      <div id="jokerGrid"></div>
+      
+      <div id="footer">
+        <a href='https://www.playbalatro.com/' alt='Balatro Website'><img src='assets/Balatro logo-new.png' style='height: 3em;'></a><br>
+        <a href='https://www.github.com/benbeau/balatro-calculator'>view code on GitHub</a>
+      </div>
+    </div>
+    
+
+    
+    <script type="text/javascript" src="hoverCard.js"></script>
+    <script type="text/javascript" src="cards.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>

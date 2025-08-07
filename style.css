@@ -1,0 +1,834 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background: #1a1a1a;
+  color: white;
+  line-height: 1.6;
+}
+
+#mainContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+/* Header styles */
+#header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#logo {
+  height: min(120px, 12vh);
+  max-width: 90%;
+  margin-bottom: 15px;
+}
+
+#header h1 {
+  font-size: 2em;
+  margin: 0;
+  color: #f5b143;
+}
+
+/* Controls section */
+#controls {
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+#filterControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 15px;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+#filterControls > div {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+#searchInput {
+  max-width: 200px;
+  width: 100%;
+}
+
+#sortSelect {
+  max-width: 150px;
+  width: 100%;
+}
+
+#filterControls label {
+  font-weight: bold;
+  color: #f5b143;
+}
+
+#filterControls input,
+#filterControls select {
+  padding: 8px 12px;
+  border: 2px solid #444;
+  border-radius: 5px;
+  background: #333;
+  color: white;
+  font-family: inherit;
+}
+
+#filterControls input:focus,
+#filterControls select:focus {
+  outline: none;
+  border-color: #f5b143;
+}
+
+#filterControls button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  background: #f5b143;
+  color: #1a1a1a;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+#filterControls button:hover {
+  background: #e6a23c;
+}
+
+/* Stats section */
+#stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 0 -4px;
+}
+
+.stat {
+  background: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-align: center;
+  min-width: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.stakeIcon {
+  width: 25px;
+  height: 25px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 125px 50px;
+  image-rendering: pixelated;
+}
+
+.stakeIcon.noStake {
+  background: #666;
+  border: 2px dashed #999;
+  border-radius: 50%;
+}
+
+.stakeIcon.goldStake { background-image: url(assets/chips.png); background-position: -40px -20px; }
+.stakeIcon.orangeStake { background-image: url(assets/chips.png); background-position: -20px -20px; }
+.stakeIcon.purpleStake { background-image: url(assets/chips.png); background-position: 0px -20px; }
+.stakeIcon.blackStake { background-image: url(assets/chips.png); background-position: -80px 0px; }
+.stakeIcon.blueStake { background-image: url(assets/chips.png); background-position: -60px 0px; }
+.stakeIcon.greenStake { background-image: url(assets/chips.png); background-position: -40px 0px; }
+.stakeIcon.redStake { background-image: url(assets/chips.png); background-position: -20px 0px; }
+.stakeIcon.whiteStake { background-image: url(assets/chips.png); background-position: 0px 0px; }
+
+.statLabel {
+  display: block;
+  font-size: 0.8em;
+  color: #ccc;
+  line-height: 1;
+}
+
+.stat.total {
+  background: #2a2a2a;
+  border: 1px solid #444;
+}
+
+.statValue {
+  display: block;
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #f5b143;
+  line-height: 1;
+}
+
+/* Progress section */
+#progressSection {
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.progressContainer {
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+  min-width: 280px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.progressLabel {
+  font-weight: bold;
+  color: #f5b143;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.progressBar {
+  background: #444;
+  border-radius: 10px;
+  height: 20px;
+  overflow: hidden;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  border-radius: 10px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+.progressFill.gold {
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+}
+
+.progressText {
+  text-align: center;
+  font-size: 0.9em;
+  color: #ccc;
+  font-weight: bold;
+}
+
+/* Joker grid */
+#jokerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.jokerCard {
+  position: relative;
+  display: block;
+  width: 71px;
+  height: 94px;
+  padding: 0;
+  image-rendering: pixelated;
+  cursor: pointer;
+  z-index: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  margin: 0 auto;
+}
+
+.jokerCard:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.jokerCard:after {
+  content: '';
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: inherit;
+  position: absolute;
+  mask-image: url(assets/Jokers.png);
+  mask-position: inherit;
+  mask-mode: alpha;
+  mask-size: 710px 1520px;
+}
+
+.jokerCard:hover:after {
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.5);
+}
+
+/* Stake sticker on joker card */
+.jokerCard:before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 15px;
+  height: 15px;
+  background-size: 15px 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+}
+
+.jokerCard[data-stake="whiteStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: 0px 0px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="redStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -15px 0px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="greenStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -30px 0px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="blueStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -45px 0px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="blackStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -60px 0px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="purpleStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: 0px -15px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="orangeStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -15px -15px;
+  background-size: 75px 30px;
+}
+
+.jokerCard[data-stake="goldStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -30px -15px;
+  background-size: 75px 30px;
+}
+
+.jokerItem {
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Stake Editor */
+.stakeEditor {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(42, 42, 42, 0.95);
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 100;
+  border: 2px solid #f5b143;
+  margin-top: 10px;
+  width: max-content;
+}
+
+.jokerCard.selected {
+  transform: scale(1.25);
+  border: 2px solid #f5b143;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  z-index: 200;
+}
+
+.stakeEditorButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.stickerBtn {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #444;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stickerBtn:hover {
+  transform: scale(1.1);
+}
+
+.stickerBtn.active {
+  transform: scale(1.15);
+  border-color: #f5b143;
+  box-shadow: 0 0 10px rgba(245, 177, 67, 0.8);
+  z-index: 10;
+}
+
+.stickerBtn.noStake {
+  background: #666;
+  border: 2px solid #444;
+}
+
+.stickerBtn.noStake.active {
+  border-color: #f5b143;
+  background: #888;
+}
+
+.stickerBtn.whiteStake {
+  background-image: url(assets/chips.png);
+  background-position: 0px 0px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.redStake {
+  background-image: url(assets/chips.png);
+  background-position: -25px 0px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.greenStake {
+  background-image: url(assets/chips.png);
+  background-position: -50px 0px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.blueStake {
+  background-image: url(assets/chips.png);
+  background-position: -75px 0px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.blackStake {
+  background-image: url(assets/chips.png);
+  background-position: -100px 0px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.purpleStake {
+  background-image: url(assets/chips.png);
+  background-position: 0px -25px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.orangeStake {
+  background-image: url(assets/chips.png);
+  background-position: -25px -25px;
+  background-size: 125px 50px;
+}
+
+.stickerBtn.goldStake {
+  background-image: url(assets/chips.png);
+  background-position: -50px -25px;
+  background-size: 125px 50px;
+}
+
+@keyframes rainbow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Footer */
+#footer {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #444;
+}
+
+#footer a {
+  color: #f5b143;
+  text-decoration: none;
+}
+
+#footer a:hover {
+  text-decoration: underline;
+}
+
+/* Tooltip styles (keeping existing) */
+.tooltip {
+  position: relative;
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.tooltiptext {
+  visibility: hidden;
+  width: auto;
+  min-width: 100px;
+  max-width: 200px;
+  background-color: rgba(42, 42, 42, 0.9);
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 1000;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: visibility 0s 0.25s, opacity 0.25s ease;
+  font-size: 0.8em;
+  line-height: 1.4;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.tooltip:hover .tooltiptext.hover-only {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0.25s, 0.25s;
+}
+
+.tooltip .tooltiptext.click-only {
+  display: none;
+}
+
+.jokerCard.selected + .tooltiptext.hover-only {
+  display: none;
+}
+
+.jokerCard.selected ~ .tooltiptext.click-only {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltiptext .title {
+  font-weight: bold;
+  color: #f5b143;
+  margin-bottom: 5px;
+}
+
+.tooltiptext .current-stake {
+  font-size: 0.9em;
+  color: #8BC34A;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.tooltiptext .desc {
+  color: #ccc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  #mainContainer {
+    padding: 10px;
+  }
+  
+  #header h1 {
+    font-size: 2em;
+  }
+  
+  #filterControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  #stats {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .stat {
+    min-width: 200px;
+  }
+  
+  #jokerGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .jokerName {
+    font-size: 0.8em;
+  }
+  
+  .stickerButtons {
+    gap: 3px;
+  }
+  
+  .stickerBtn {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+/* Keep existing joker card styles for compatibility */
+.modifierCard:hover, .jmodifierCard:hover, .jokerCard:hover, .playingCard:hover, .playfieldCard:hover {
+  scale: 1.1;
+  animation: bounce 0.3s ease;
+  z-index: 2;
+}
+
+@keyframes bounce {
+  1% {
+    scale: 1;
+  }
+  25% {
+    scale: 1.15;
+  }
+  50% {
+    scale: 1.075;
+  }
+  51% {
+    scale: 1.075;
+  }
+  100% {
+    scale: 1.1;
+  }
+}
+
+.playingCard {
+  position: absolute;
+  left: 0;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  image-rendering: pixelated;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.playfieldCard {
+  position: absolute;
+  left: 0;
+  display: inline-block;
+  width: 100%;
+  max-width: 71px;
+  height: 94px;
+  padding: 0;
+  image-rendering: pixelated;
+  cursor: pointer;
+}
+
+.chipIcon {
+  margin-bottom: -8px;
+  margin-left: 4px;
+  margin-right: 4px;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(assets/chips.png) 0 0;
+  image-rendering: pixelated;
+}
+
+.limitText {
+  color: white;
+  float: left;
+  margin-left: 1em;
+}
+
+.tooltip:has(.playingCard) {
+  width: 7.6%;
+}
+
+.tooltip:has(.jokerCard) {
+  width: 10%;
+}
+
+.tooltip:has(.modifierCard) {
+  width: 100%;
+}
+
+.tooltip:has(.jmodifierCard) {
+  width: 33.33%;
+}
+
+#jokerArea .tooltip:has(.jokerCard),
+#modifyJoker .tooltip:has(.jokerCard) {
+  width: 100%;
+  max-width: 71px;
+  height: 94px;
+}
+
+#jokerArea .tooltip:has(.jokerCard) .jokerCard,
+#modifyJoker .tooltip:has(.jokerCard) .jokerCard {
+  width: 100%;
+  height: 100%;
+}
+
+#jokerArea .tooltip:has(.jokerCard) .jokerCard:after,
+#modifyJoker .tooltip:has(.jokerCard) .jokerCard:after {
+  width: 100%;
+  height: 100%;
+}
+
+.removeJoker {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: #ff4d40;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.positionButtons {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.lvlBtn {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 20px;
+}
+
+.lvlBtn:hover {
+  background: #666;
+}
+
+.handLevel {
+  display: flex;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 8px 12px;
+  border-radius: 5px;
+  margin: 5px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.handLevel:hover {
+  background: #3a3a3a;
+}
+
+.handName {
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+.handLvl {
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: center;
+}
+
+.handLvl:focus {
+  outline: none;
+  background: #666;
+}
+
+.levelStat {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9em;
+}
+
+.levelStatB {
+  color: #009dff;
+}
+
+.levelStatR {
+  color: #ff4d40;
+}
+
+.nameLvl {
+  color: #ccc;
+  font-size: 0.8em;
+}
+
+.resetBtn {
+  background: #f5b143;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+  transition: background 0.2s;
+}
+
+.resetBtn:hover {
+  background: #e6a23c;
+}
+
+.menuBtns {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.menuBtn {
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.menuBtn:hover,
+.menuBtn.active {
+  background: #f5b143;
+  color: #1a1a1a;
+}
+
+
