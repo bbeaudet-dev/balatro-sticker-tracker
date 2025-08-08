@@ -1,4 +1,755 @@
 {
-  "lastUpdated": "",
-  "jokers": []
-} 
+  "lastUpdated": "2025-08-08T02:40:43.736Z",
+  "jokers": [
+    {
+      "id": 0,
+      "name": "Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 1,
+      "name": "Chaos the Clown",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 2,
+      "name": "Jolly Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 3,
+      "name": "Zany Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 4,
+      "name": "Mad Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 5,
+      "name": "Crazy Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 6,
+      "name": "Droll Joker",
+      "stakeSticker": "blueStake"
+    },
+    {
+      "id": 7,
+      "name": "Half Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 8,
+      "name": "Merry Andy",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 9,
+      "name": "Stone Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 10,
+      "name": "Juggler",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 11,
+      "name": "Drunkard",
+      "stakeSticker": "noStake"
+    },
+    {
+      "id": 12,
+      "name": "Acrobat",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 13,
+      "name": "Sock and Buskin",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 14,
+      "name": "Mime",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 15,
+      "name": "Credit Card",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 16,
+      "name": "Greedy Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 17,
+      "name": "Lusty Joker",
+      "stakeSticker": "redStake"
+    },
+    {
+      "id": 18,
+      "name": "Wrathful Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 19,
+      "name": "Gluttonous Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 20,
+      "name": "Troubadour",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 21,
+      "name": "Banner",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 22,
+      "name": "Mystic Summit",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 23,
+      "name": "Marble Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 24,
+      "name": "Loyalty Card",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 25,
+      "name": "Hack",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 26,
+      "name": "Misprint",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 27,
+      "name": "Steel Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 28,
+      "name": "Raised Fist",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 29,
+      "name": "Golden Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 30,
+      "name": "Blueprint",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 31,
+      "name": "Glass Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 32,
+      "name": "Scary Face",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 33,
+      "name": "Abstract Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 34,
+      "name": "Delayed Gratification",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 35,
+      "name": "Golden Ticket",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 36,
+      "name": "Pareidolia",
+      "stakeSticker": "blackStake"
+    },
+    {
+      "id": 37,
+      "name": "Cartomancer",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 38,
+      "name": "Even Steven",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 39,
+      "name": "Odd Todd",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 40,
+      "name": "Wee Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 41,
+      "name": "Business Card",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 42,
+      "name": "Supernova",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 43,
+      "name": "Mr. Bones",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 44,
+      "name": "Seeing Double",
+      "stakeSticker": "blueStake"
+    },
+    {
+      "id": 45,
+      "name": "The Duo",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 46,
+      "name": "The Trio",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 47,
+      "name": "The Family",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 48,
+      "name": "The Order",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 49,
+      "name": "The Tribe",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 50,
+      "name": "8 Ball",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 51,
+      "name": "Fibonacci",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 52,
+      "name": "Joker Stencil",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 53,
+      "name": "Space Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 54,
+      "name": "Matador",
+      "stakeSticker": "redStake"
+    },
+    {
+      "id": 55,
+      "name": "Ceremonial Dagger",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 56,
+      "name": "Showman",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 57,
+      "name": "Fortune Teller",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 58,
+      "name": "Hit the Road",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 59,
+      "name": "Swashbuckler",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 60,
+      "name": "Flower Pot",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 61,
+      "name": "Ride the Bus",
+      "stakeSticker": "orangeStake"
+    },
+    {
+      "id": 62,
+      "name": "Shoot the Moon",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 63,
+      "name": "Scholar",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 64,
+      "name": "Smeared Joker",
+      "stakeSticker": "blackStake"
+    },
+    {
+      "id": 65,
+      "name": "Oops! All 6s",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 66,
+      "name": "Four Fingers",
+      "stakeSticker": "greenStake"
+    },
+    {
+      "id": 67,
+      "name": "Gros Michel",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 68,
+      "name": "Stuntman",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 69,
+      "name": "Hanging Chad",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 70,
+      "name": "Driver's License",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 71,
+      "name": "Invisible Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 72,
+      "name": "Astronomer",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 73,
+      "name": "Burnt Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 74,
+      "name": "Dusk",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 75,
+      "name": "Throwback",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 76,
+      "name": "The Idol",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 77,
+      "name": "Brainstorm",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 78,
+      "name": "Satellite",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 79,
+      "name": "Rough Gem",
+      "stakeSticker": "greenStake"
+    },
+    {
+      "id": 80,
+      "name": "Bloodstone",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 81,
+      "name": "Arrowhead",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 82,
+      "name": "Onyx Agate",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 83,
+      "name": "Canio",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 84,
+      "name": "Triboulet",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 85,
+      "name": "Yorick",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 86,
+      "name": "Chicot",
+      "stakeSticker": "orangeStake"
+    },
+    {
+      "id": 87,
+      "name": "Perkeo",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 88,
+      "name": "Certificate",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 89,
+      "name": "Bootstraps",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 90,
+      "name": "Egg",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 91,
+      "name": "Burglar",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 92,
+      "name": "Blackboard",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 93,
+      "name": "Runner",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 94,
+      "name": "Ice Cream",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 95,
+      "name": "DNA",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 96,
+      "name": "Splash",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 97,
+      "name": "Blue Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 98,
+      "name": "Sixth Sense",
+      "stakeSticker": "noStake"
+    },
+    {
+      "id": 99,
+      "name": "Constellation",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 100,
+      "name": "Hiker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 101,
+      "name": "Faceless Joker",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 102,
+      "name": "Green Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 103,
+      "name": "Superposition",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 104,
+      "name": "To Do List",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 105,
+      "name": "Cavendish",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 106,
+      "name": "Card Sharp",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 107,
+      "name": "Red Card",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 108,
+      "name": "Madness",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 109,
+      "name": "Square Joker",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 110,
+      "name": "Séance",
+      "stakeSticker": "blackStake"
+    },
+    {
+      "id": 111,
+      "name": "Riff-raff",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 112,
+      "name": "Vampire",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 113,
+      "name": "Shortcut",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 114,
+      "name": "Hologram",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 115,
+      "name": "Vagabond",
+      "stakeSticker": "whiteStake"
+    },
+    {
+      "id": 116,
+      "name": "Baron",
+      "stakeSticker": "orangeStake"
+    },
+    {
+      "id": 117,
+      "name": "Cloud 9",
+      "stakeSticker": "redStake"
+    },
+    {
+      "id": 118,
+      "name": "Rocket",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 119,
+      "name": "Obelisk",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 120,
+      "name": "Midas Mask",
+      "stakeSticker": "whiteStake"
+    },
+    {
+      "id": 121,
+      "name": "Luchador",
+      "stakeSticker": "blackStake"
+    },
+    {
+      "id": 122,
+      "name": "Photograph",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 123,
+      "name": "Gift Card",
+      "stakeSticker": "redStake"
+    },
+    {
+      "id": 124,
+      "name": "Turtle Bean",
+      "stakeSticker": "blackStake"
+    },
+    {
+      "id": 125,
+      "name": "Erosion",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 126,
+      "name": "Reserved Parking",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 127,
+      "name": "Mail-In Rebate",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 128,
+      "name": "To the Moon",
+      "stakeSticker": "blueStake"
+    },
+    {
+      "id": 129,
+      "name": "Hallucination",
+      "stakeSticker": "blueStake"
+    },
+    {
+      "id": 130,
+      "name": "Sly Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 131,
+      "name": "Wily Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 132,
+      "name": "Clever Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 133,
+      "name": "Devious Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 134,
+      "name": "Crafty Joker",
+      "stakeSticker": "noStake"
+    },
+    {
+      "id": 135,
+      "name": "Lucky Cat",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 136,
+      "name": "Baseball Card",
+      "stakeSticker": "purpleStake"
+    },
+    {
+      "id": 137,
+      "name": "Bull",
+      "stakeSticker": "blackStake"
+    },
+    {
+      "id": 138,
+      "name": "Diet Cola",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 139,
+      "name": "Trading Card",
+      "stakeSticker": "blueStake"
+    },
+    {
+      "id": 140,
+      "name": "Flash Card",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 141,
+      "name": "Popcorn",
+      "stakeSticker": "noStake"
+    },
+    {
+      "id": 142,
+      "name": "Ramen",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 143,
+      "name": "Seltzer",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 144,
+      "name": "Spare Trousers",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 145,
+      "name": "Campfire",
+      "stakeSticker": "blueStake"
+    },
+    {
+      "id": 146,
+      "name": "Smiley Face",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 147,
+      "name": "Ancient Joker",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 148,
+      "name": "Walkie Talkie",
+      "stakeSticker": "goldStake"
+    },
+    {
+      "id": 149,
+      "name": "Castle",
+      "stakeSticker": "purpleStake"
+    }
+  ]
+}

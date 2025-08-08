@@ -2,7 +2,7 @@
 let jokerData = [];
 let filteredJokers = [];
 let searchTerm = '';
-let sortBy = 'name';
+let sortBy = 'collection';
 
 
 // Stake types
@@ -18,10 +18,52 @@ const stakeTypes = [
     'goldStake'
 ];
 
+// Color codes for joker descriptions
+const colorCodes = {
+    multc: '<span class="mult">',
+    endc: '</span>',
+    numc: '<span class="num">',
+    probc: '<span class="prob">',
+    chipc: '<span class="chip">',
+    shadowc: '<span class="shadow">',
+    diamondc: '<span class="diamond">♦</span>',
+    heartc: '<span class="heart">♥</span>',
+    spadec: '<span class="spade">♠</span>',
+    clubc: '<span class="club">♣</span>',
+    prodc: '<span class="prod">',
+    moneyc: '<span class="money>'
+};
+
+// Process description template literals
+function processDescription(description, jokerValue = 0) {
+    let processed = description;
+    
+    // Replace money values
+    processed = processed.replace(/\${moneyc}/g, `<span class="money">`);
+    
+    // Replace color codes with spans
+    for (const [code, span] of Object.entries(colorCodes)) {
+        processed = processed.replaceAll('${' + code + '}', span);
+    }
+    
+    // Replace joker value if present
+    processed = processed.replace(/\${(\d+\*)?jokerValue}/, (match, multiplier) => {
+        if (multiplier) {
+            return parseInt(multiplier) * jokerValue;
+        }
+        return jokerValue;
+    });
+
+    // Add money class for dollar amounts
+    processed = processed.replace(/\$(\d+)/g, '<span class="money">$$$1</span>');
+    
+    return processed;
+}
+
 // Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     initializeJokerData();
-    loadStickerData();
+    await loadStickerData();
     renderJokerGrid();
     updateStats();
 });
@@ -31,14 +73,59 @@ function initializeJokerData() {
     jokerData = [];
     let jokerIndex = 0;
     
+    // Collection order mapping (from cards.js)
+    const collectionOrder = {
+        'Joker': 1, 'Greedy Joker': 2, 'Lusty Joker': 3, 'Wrathful Joker': 4, 'Gluttonous Joker': 5,
+        'Jolly Joker': 6, 'Zany Joker': 7, 'Mad Joker': 8, 'Crazy Joker': 9, 'Droll Joker': 10,
+        'Sly Joker': 11, 'Wily Joker': 12, 'Clever Joker': 13, 'Devious Joker': 14, 'Crafty Joker': 15,
+        'Half Joker': 16, 'Joker Stencil': 17, 'Four Fingers': 18, 'Mime': 19, 'Credit Card': 20,
+        'Ceremonial Dagger': 21, 'Banner': 22, 'Mystic Summit': 23, 'Marble Joker': 24, 'Loyalty Card': 25,
+        '8 Ball': 26, 'Misprint': 27, 'Dusk': 28, 'Raised Fist': 29, 'Chaos the Clown': 30,
+        'Fibonacci': 31, 'Steel Joker': 32, 'Scary Face': 33, 'Abstract Joker': 34, 'Delayed Gratification': 35,
+        'Hack': 36, 'Pareidolia': 37, 'Gros Michel': 38, 'Even Steven': 39, 'Odd Todd': 40,
+        'Scholar': 41, 'Business Card': 42, 'Supernova': 43, 'Ride the Bus': 44, 'Space Joker': 45,
+        'Egg': 46, 'Burglar': 47, 'Blackboard': 48, 'Runner': 49, 'Ice Cream': 50,
+        'DNA': 51, 'Splash': 52, 'Blue Joker': 53, 'Sixth Sense': 54, 'Constellation': 55,
+        'Hiker': 56, 'Faceless Joker': 57, 'Green Joker': 58, 'Superposition': 59, 'To Do List': 60,
+        'Cavendish': 61, 'Card Sharp': 62, 'Red Card': 63, 'Madness': 64, 'Square Joker': 65,
+        'Séance': 66, 'Riff-raff': 67, 'Vampire': 68, 'Shortcut': 69, 'Hologram': 70,
+        'Vagabond': 71, 'Baron': 72, 'Cloud 9': 73, 'Rocket': 74, 'Obelisk': 75,
+        'Midas Mask': 76, 'Luchador': 77, 'Photograph': 78, 'Gift Card': 79, 'Turtle Bean': 80,
+        'Erosion': 81, 'Reserved Parking': 82, 'Mail-In Rebate': 83, 'To the Moon': 84, 'Hallucination': 85,
+        'Fortune Teller': 86, 'Juggler': 87, 'Drunkard': 88, 'Stone Joker': 89, 'Golden Joker': 90,
+        'Lucky Cat': 91, 'Baseball Card': 92, 'Bull': 93, 'Diet Cola': 94, 'Trading Card': 95,
+        'Flash Card': 96, 'Popcorn': 97, 'Spare Trousers': 98, 'Ancient Joker': 99, 'Ramen': 100,
+        'Walkie Talkie': 101, 'Seltzer': 102, 'Castle': 103, 'Smiley Face': 104, 'Campfire': 105,
+        'Golden Ticket': 106, 'Mr. Bones': 107, 'Acrobat': 108, 'Sock and Buskin': 109, 'Swashbuckler': 110,
+        'Troubadour': 111, 'Certificate': 112, 'Smeared Joker': 113, 'Throwback': 114, 'Hanging Chad': 115,
+        'Rough Gem': 116, 'Bloodstone': 117, 'Arrowhead': 118, 'Onyx Agate': 119, 'Glass Joker': 120,
+        'Showman': 121, 'Flower Pot': 122, 'Blueprint': 123, 'Wee Joker': 124, 'Merry Andy': 125,
+        'Oops! All 6s': 126, 'The Idol': 127, 'Seeing Double': 128, 'Matador': 129, 'Hit the Road': 130,
+        'The Duo': 131, 'The Trio': 132, 'The Family': 133, 'The Order': 134, 'The Tribe': 135,
+        'Stuntman': 136, 'Invisible Joker': 137, 'Brainstorm': 138, 'Satellite': 139, 'Shoot the Moon': 140,
+        "Driver's License": 141, 'Cartomancer': 142, 'Astronomer': 143, 'Burnt Joker': 144, 'Bootstraps': 145,
+        'Canio': 146, 'Triboulet': 147, 'Yorick': 148, 'Chicot': 149, 'Perkeo': 150
+    };
+    
     for (let i = 0; i < jokerTexts.length; i++) {
         for (let j = 0; j < jokerTexts[i].length; j++) {
             if (jokerTexts[i][j] && jokerTexts[i][j][0]) {
+                const jokerName = jokerTexts[i][j][0];
+                const collectionOrderValue = collectionOrder[jokerName] || 999;
+                
+                // Debug logging for Seance and nearby jokers
+                if (jokerName === 'Seance' || jokerName === 'Riff-raff' || jokerName === 'Vampire' || jokerName === 'Shortcut') {
+                    console.log(`Joker: ${jokerName}, Collection Order: ${collectionOrderValue}`);
+                }
+                
                 const joker = {
                     id: jokerIndex++,
-                    name: jokerTexts[i][j][0],
+                    name: jokerName,
                     description: jokerTexts[i][j][1],
                     position: [i, j],
+                    rarity: jokerRarity[i][j],
+                    rarityName: rarityNames[jokerRarity[i][j]],
+                    collectionOrder: collectionOrderValue,
                     stakeSticker: 'noStake' // Default to no stake
                 };
                 jokerData.push(joker);
@@ -51,21 +138,33 @@ function initializeJokerData() {
 
 // Generate joker string for display with stake sticker
 function jokerString(i, j, stakeType = 'noStake') {
-    let jmodifierString = 'url(assets/Jokers.png) 0px -855px, ';
-    const cardWidth = 85;
-    const cardHeight = 112;
-
-    // Handle special cases
-    switch(`${i},${j}`) {
-        case '8,3': jmodifierString = `url(assets/Jokers.png) -${71*3}px -${95*9}px, `; break;
-        case '8,4': jmodifierString = `url(assets/Jokers.png) -${71*4}px -${95*9}px, `; break;
-        case '8,5': jmodifierString = `url(assets/Jokers.png) -${71*5}px -${95*9}px, `; break;
-        case '8,6': jmodifierString = `url(assets/Jokers.png) -${71*6}px -${95*9}px, `; break;
-        case '8,7': jmodifierString = `url(assets/Jokers.png) -${71*7}px -${95*9}px, `; break;
-        case '12,4': jmodifierString = `url(assets/Jokers.png) -${71*2}px -${95*9}px, `; break;
+    // The sprite sheet is 710x1520 pixels, with each joker being 71x95 pixels
+    const cardWidth = 71;
+    const cardHeight = 95;
+    
+    // Calculate positions
+    const xPos = j * cardWidth;
+    const yPos = i * cardHeight;
+    
+    // Handle special cases for soul cards (including Hologram)
+    // Background positions and icon positions (zero-based row/col)
+    const soulCards = {
+        '8,3': { bgRow: 8, bgCol: 3, iconRow: 9, iconCol: 3 }, // Canio (Row 9 pos 4 / Row 10 pos 4)
+        '8,4': { bgRow: 8, bgCol: 4, iconRow: 9, iconCol: 4 }, // Triboulet (Row 9 pos 5 / Row 10 pos 5)
+        '8,5': { bgRow: 8, bgCol: 5, iconRow: 9, iconCol: 5 }, // Yorick (Row 9 pos 6 / Row 10 pos 6)
+        '8,6': { bgRow: 8, bgCol: 6, iconRow: 9, iconCol: 6 }, // Chicot (Row 9 pos 7 / Row 10 pos 7)
+        '8,7': { bgRow: 8, bgCol: 7, iconRow: 9, iconCol: 7 }, // Perkeo (Row 9 pos 8 / Row 10 pos 8)
+        '12,4': { bgRow: 9, bgCol: 9, iconRow: 9, iconCol: 2 } // Hologram (Row 10 pos 10 / Row 10 pos 3)
+    };
+    
+    if (`${i},${j}` in soulCards) {
+        const soul = soulCards[`${i},${j}`];
+        console.log(`Soul card at ${i},${j} using background -${soul.bgCol * cardWidth}px -${soul.bgRow * cardHeight}px and icon -${soul.iconCol * cardWidth}px -${soul.iconRow * cardHeight}px`);
+        // For soul cards, we need both the background and the icon
+        return `" style="background-position: -${soul.bgCol * cardWidth}px -${soul.bgRow * cardHeight}px" data-soul="true" data-icon-pos="${soul.iconCol * cardWidth},${soul.iconRow * cardHeight}"`;
     }
     
-    return `" style="mask-position: -${71*j}px -${95*i}px; background: ${jmodifierString}url(assets/Jokers.png) -${71*j}px -${95*i}px"`;
+    return `" style="background-position: -${xPos}px -${yPos}px"`;
 }
 
 // Render the joker grid
@@ -87,6 +186,12 @@ function createJokerElement(joker) {
     const [i, j] = joker.position;
     const jokerStringValue = jokerString(i, j, joker.stakeSticker);
     
+    // Check if this is a soul card and set the icon position
+    const soulCards = {
+        '8,3': true, '8,4': true, '8,5': true, '8,6': true, '8,7': true, '12,4': true
+    };
+    const isSoulCard = `${i},${j}` in soulCards;
+    
     div.innerHTML = `
         <div class="tooltip">
             <div class="jokerCard${jokerStringValue}" data-stake="${joker.stakeSticker}" onclick="showStakeEditor(${joker.id})" onmousemove="hoverCard(event)" onmouseout="noHoverCard(event)"></div>
@@ -95,8 +200,7 @@ function createJokerElement(joker) {
             </span>
             <span class="tooltiptext click-only">
                 <div class="title">${joker.name}</div>
-                <div class="current-stake">Current: ${getStakeDisplayName(joker.stakeSticker)}</div>
-                <div class="desc">${joker.description}</div>
+                <div class="desc">${processDescription(joker.description)}</div>
             </span>
         </div>
         <div class="stakeEditor" id="stakeEditor-${joker.id}" style="display: none;">
@@ -110,6 +214,16 @@ function createJokerElement(joker) {
             </div>
         </div>
     `;
+    
+    // Set CSS custom property for soul cards
+    if (isSoulCard) {
+        const jokerCard = div.querySelector('.jokerCard');
+        const iconPos = jokerCard.getAttribute('data-icon-pos');
+        if (iconPos) {
+            const [x, y] = iconPos.split(',').map(Number);
+            jokerCard.style.setProperty('--icon-pos', `-${x}px -${y}px`);
+        }
+    }
     
     return div;
 }
@@ -134,16 +248,24 @@ function getStakeDisplayName(stakeType) {
 function setStakeSticker(jokerId, stakeType) {
     const joker = jokerData.find(j => j.id === jokerId);
     if (joker) {
-        joker.stakeSticker = stakeType;
         const editor = document.getElementById(`stakeEditor-${jokerId}`);
-        const jokerCard = editor?.parentElement?.querySelector('.jokerCard');
-        if (editor) {
-            editor.style.display = 'none';
-            jokerCard?.classList.remove('selected');
-        }
+        const buttons = editor.querySelectorAll('.stickerBtn');
+
+        // Remove selected class from all buttons
+        buttons.forEach(btn => btn.classList.remove('selected'));
+        
+        // Update joker data and save immediately
+        joker.stakeSticker = stakeType;
         saveStickerData();
-        renderJokerGrid();
+        
+        // Update only the specific joker element instead of re-rendering entire grid
+        const jokerElement = editor.parentElement;
+        const jokerCard = jokerElement.querySelector('.jokerCard');
+        jokerCard.setAttribute('data-stake', stakeType);
+        
+        // Update stats and close editor immediately
         updateStats();
+        hideStakeEditor(jokerId);
     }
 }
 
@@ -155,7 +277,7 @@ function filterJokers() {
 
 // Sort jokers
 function sortJokers() {
-    sortBy = document.getElementById('sortSelect').value;
+    sortBy = document.querySelector('input[name="sort"]:checked').value;
     applyFilters();
 }
 
@@ -171,25 +293,33 @@ function applyFilters() {
         switch (sortBy) {
             case 'name':
                 return a.name.localeCompare(b.name);
-
-            case 'goldStake':
-                return (b.stakeSticker === 'goldStake' ? 1 : 0) - (a.stakeSticker === 'goldStake' ? 1 : 0);
-            case 'orangeStake':
-                return (b.stakeSticker === 'orangeStake' ? 1 : 0) - (a.stakeSticker === 'orangeStake' ? 1 : 0);
-            case 'purpleStake':
-                return (b.stakeSticker === 'purpleStake' ? 1 : 0) - (a.stakeSticker === 'purpleStake' ? 1 : 0);
-            case 'blackStake':
-                return (b.stakeSticker === 'blackStake' ? 1 : 0) - (a.stakeSticker === 'blackStake' ? 1 : 0);
-            case 'blueStake':
-                return (b.stakeSticker === 'blueStake' ? 1 : 0) - (a.stakeSticker === 'blueStake' ? 1 : 0);
-            case 'greenStake':
-                return (b.stakeSticker === 'greenStake' ? 1 : 0) - (a.stakeSticker === 'greenStake' ? 1 : 0);
-            case 'redStake':
-                return (b.stakeSticker === 'redStake' ? 1 : 0) - (a.stakeSticker === 'redStake' ? 1 : 0);
-            case 'whiteStake':
-                return (b.stakeSticker === 'whiteStake' ? 1 : 0) - (a.stakeSticker === 'whiteStake' ? 1 : 0);
-            case 'none':
-                return (a.stakeSticker === 'noStake' ? 1 : 0) - (b.stakeSticker === 'noStake' ? 1 : 0);
+            case 'rarity':
+                // Sort by rarity (highest to lowest) and then by name
+                if (b.rarity !== a.rarity) {
+                    return b.rarity - a.rarity;
+                }
+                return a.name.localeCompare(b.name);
+            case 'stake':
+                // Define stake order from highest to lowest
+                const stakeOrder = {
+                    'goldStake': 8,
+                    'orangeStake': 7,
+                    'purpleStake': 6,
+                    'blackStake': 5,
+                    'blueStake': 4,
+                    'greenStake': 3,
+                    'redStake': 2,
+                    'whiteStake': 1,
+                    'noStake': 0
+                };
+                // Sort by stake value (highest to lowest) and then by name
+                if (stakeOrder[b.stakeSticker] !== stakeOrder[a.stakeSticker]) {
+                    return stakeOrder[b.stakeSticker] - stakeOrder[a.stakeSticker];
+                }
+                return a.name.localeCompare(b.name);
+            case 'collection':
+                // Sort by collection order (the order they appear in the game)
+                return a.collectionOrder - b.collectionOrder;
             default:
                 return 0;
         }
@@ -216,7 +346,7 @@ function updateStats() {
     };
     
     // Count jokers at or above each stake level
-    const noStakeCount = jokerData.filter(j => stakeLevels[j.stakeSticker] >= stakeLevels['noStake']).length;
+    const noStakeCount = jokerData.filter(j => j.stakeSticker === 'noStake').length; // only truly blank
     const whiteStakeCount = jokerData.filter(j => stakeLevels[j.stakeSticker] >= stakeLevels['whiteStake']).length;
     const redStakeCount = jokerData.filter(j => stakeLevels[j.stakeSticker] >= stakeLevels['redStake']).length;
     const greenStakeCount = jokerData.filter(j => stakeLevels[j.stakeSticker] >= stakeLevels['greenStake']).length;
@@ -270,16 +400,20 @@ function updateProgressBars(overallProgress, maxOverallProgress, goldProgress, m
     const overallPercentage = (overallProgress / maxOverallProgress) * 100;
     document.getElementById('overallProgress').style.width = `${overallPercentage}%`;
     document.getElementById('overallProgressText').textContent = `${overallProgress} / ${maxOverallProgress}`;
+    const overallPercentLabel = document.getElementById('overallPercent');
+    if (overallPercentLabel) overallPercentLabel.textContent = `${Math.round(overallPercentage)}%`;
     
     // Gold progress bar
     const goldPercentage = (goldProgress / maxGoldProgress) * 100;
     document.getElementById('goldProgress').style.width = `${goldPercentage}%`;
     document.getElementById('goldProgressText').textContent = `${goldProgress} / ${maxGoldProgress}`;
+    const goldPercentLabel = document.getElementById('goldPercent');
+    if (goldPercentLabel) goldPercentLabel.textContent = `${Math.round(goldPercentage)}%`;
 }
 
 // Reset all stickers
 function resetAllStickers() {
-    if (confirm('Are you sure you want to reset all stake stickers? This cannot be undone.')) {
+    if (confirm('Are you sure you want to reset all stickers?')) {
         jokerData.forEach(joker => {
             joker.stakeSticker = 'noStake';
         });
@@ -287,66 +421,6 @@ function resetAllStickers() {
         renderJokerGrid();
         updateStats();
     }
-}
-
-// Export data
-function exportData() {
-    const data = {
-        jokers: jokerData.map(joker => ({
-            id: joker.id,
-            name: joker.name,
-            stakeSticker: joker.stakeSticker
-        })),
-        exportDate: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `balatro-stakes-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-// Import data
-function importData() {
-    document.getElementById('importFile').click();
-}
-
-// Handle import file
-function handleImportFile(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (data.jokers && Array.isArray(data.jokers)) {
-                    // Update joker data with imported stickers
-                    data.jokers.forEach(importedJoker => {
-                        const joker = jokerData.find(j => j.id === importedJoker.id);
-                        if (joker && importedJoker.stakeSticker) {
-                            joker.stakeSticker = importedJoker.stakeSticker;
-                        }
-                    });
-                    saveStickerData();
-                    renderJokerGrid();
-                    updateStats();
-                    alert('Data imported successfully!');
-                } else {
-                    alert('Invalid file format. Please select a valid export file.');
-                }
-            } catch (error) {
-                alert('Error reading file. Please make sure it\'s a valid JSON file.');
-            }
-        };
-        reader.readAsText(file);
-    }
-    // Reset file input
-    event.target.value = '';
 }
 
 // Save sticker data to file
@@ -382,16 +456,21 @@ async function saveStickerData() {
 // Load sticker data from file
 async function loadStickerData() {
     try {
+        console.log('Loading sticker data...');
         const response = await fetch('/data/stakes.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('Loaded data:', data);
+        
         if (data.jokers && Array.isArray(data.jokers)) {
+            console.log(`Found ${data.jokers.length} saved jokers`);
             data.jokers.forEach(savedJoker => {
                 const joker = jokerData.find(j => j.id === savedJoker.id);
                 if (joker && savedJoker.stakeSticker) {
+                    console.log(`Loading stake ${savedJoker.stakeSticker} for joker ${savedJoker.name} (ID: ${savedJoker.id})`);
                     joker.stakeSticker = savedJoker.stakeSticker;
                 }
             });
@@ -429,33 +508,29 @@ function noHoverCard(event) {
 
 // Show stake editor for a joker
 function showStakeEditor(jokerId) {
+    // Hide any other open editors first
+    const allEditors = document.querySelectorAll('.stakeEditor');
+    allEditors.forEach(editor => {
+        const editorId = editor.id.split('-')[1];
+        if (editorId !== jokerId.toString()) {
+            hideStakeEditor(parseInt(editorId));
+        }
+    });
+
     const editor = document.getElementById(`stakeEditor-${jokerId}`);
     const jokerCard = editor?.parentElement?.querySelector('.jokerCard');
-    
-    // If this joker is already selected, deselect it
-    if (jokerCard?.classList.contains('selected')) {
-        editor.style.display = 'none';
-        jokerCard.classList.remove('selected');
-        return;
-    }
-    
-    // Close any open editors and remove selected states first
-    document.querySelectorAll('.stakeEditor').forEach(editor => {
-        editor.style.display = 'none';
-    });
-    document.querySelectorAll('.jokerCard').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    // Show the editor for this joker and add selected state
-    if (editor && jokerCard) {
-        editor.style.display = 'block';
-        jokerCard.classList.add('selected');
+    if (editor) {
+        const isVisible = editor.style.display === 'block';
+        if (isVisible) {
+            hideStakeEditor(jokerId);
+        } else {
+            editor.style.display = 'block';
+            jokerCard?.classList.add('selected');
+        }
     }
 }
 
-// Close stake editor for a joker
-function closeStakeEditor(jokerId) {
+function hideStakeEditor(jokerId) {
     const editor = document.getElementById(`stakeEditor-${jokerId}`);
     const jokerCard = editor?.parentElement?.querySelector('.jokerCard');
     if (editor) {
@@ -464,4 +539,18 @@ function closeStakeEditor(jokerId) {
     }
 }
 
-
+// Add click outside handler to close editors
+document.addEventListener('click', function(event) {
+    const target = event.target;
+    const isJokerCard = target.classList.contains('jokerCard');
+    const isStickerBtn = target.classList.contains('stickerBtn');
+    const isStakeEditor = target.closest('.stakeEditor');
+    
+    if (!isJokerCard && !isStickerBtn && !isStakeEditor) {
+        const allEditors = document.querySelectorAll('.stakeEditor');
+        allEditors.forEach(editor => {
+            const editorId = editor.id.split('-')[1];
+            hideStakeEditor(parseInt(editorId));
+        });
+    }
+});

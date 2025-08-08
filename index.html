@@ -27,26 +27,21 @@
           </div>
           
           <div class="sortGroup">
-            <label for="sortSelect">Sort by:</label>
-            <select id="sortSelect" onchange="sortJokers()">
-                          <option value="name">Name</option>
-            <option value="none">No Stakes</option>
-            <option value="whiteStake">White Stakes</option>
-            <option value="redStake">Red Stakes</option>
-            <option value="greenStake">Green Stakes</option>
-            <option value="blueStake">Blue Stakes</option>
-            <option value="blackStake">Black Stakes</option>
-            <option value="purpleStake">Purple Stakes</option>
-            <option value="orangeStake">Orange Stakes</option>
-            <option value="goldStake">Gold Stakes</option>
-            </select>
+            <label>Sort by:</label>
+            <div class="sortButtons">
+              <input type="radio" id="sortName" name="sort" value="name" onchange="sortJokers()">
+              <label for="sortName">Name</label>
+              <input type="radio" id="sortRarity" name="sort" value="rarity" onchange="sortJokers()">
+              <label for="sortRarity">Rarity</label>
+              <input type="radio" id="sortStake" name="sort" value="stake" onchange="sortJokers()">
+              <label for="sortStake">Stake</label>
+              <input type="radio" id="sortCollection" name="sort" value="collection" checked onchange="sortJokers()">
+              <label for="sortCollection">Collection</label>
+            </div>
           </div>
           
           <div class="buttonGroup">
             <button type="button" id="resetBtn" onclick="resetAllStickers()">Reset All</button>
-            <button type="button" id="exportBtn" onclick="exportData()">Export Data</button>
-            <button type="button" id="importBtn" onclick="importData()">Import Data</button>
-            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImportFile(event)">
           </div>
         </div>
         
@@ -100,6 +95,7 @@
           <div class="progressLabel">Overall Progress</div>
           <div class="progressBar">
             <div class="progressFill" id="overallProgress"></div>
+            <div class="progressPercent" id="overallPercent">0%</div>
           </div>
           <div class="progressText" id="overallProgressText">0 / 1200</div>
         </div>
@@ -107,6 +103,7 @@
           <div class="progressLabel">Gold Stakes</div>
           <div class="progressBar">
             <div class="progressFill gold" id="goldProgress"></div>
+            <div class="progressPercent" id="goldPercent">0%</div>
           </div>
           <div class="progressText" id="goldProgressText">0 / 150</div>
         </div>

@@ -25,9 +25,8 @@ body {
 }
 
 #logo {
-  height: min(120px, 12vh);
+  height: min(150px, 15vh); /* 25% bigger from 120px→150px and 12vh→15vh */
   max-width: 90%;
-  margin-bottom: 15px;
 }
 
 #header h1 {
@@ -130,39 +129,35 @@ body {
 }
 
 .stakeIcon {
-  width: 25px;
-  height: 25px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 125px 50px;
-  image-rendering: pixelated;
+    width: 29px;  /* Each chip is 29x29 (145/5 columns) */
+    height: 29px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 145px 58px;  /* Actual sprite sheet dimensions */
+    image-rendering: pixelated;
+    display: block;
 }
 
 .stakeIcon.noStake {
-  background: #666;
-  border: 2px dashed #999;
-  border-radius: 50%;
+    background: #666;
+    border: 2px dashed #999;
+    border-radius: 50%;
 }
 
-.stakeIcon.goldStake { background-image: url(assets/chips.png); background-position: -40px -20px; }
-.stakeIcon.orangeStake { background-image: url(assets/chips.png); background-position: -20px -20px; }
-.stakeIcon.purpleStake { background-image: url(assets/chips.png); background-position: 0px -20px; }
-.stakeIcon.blackStake { background-image: url(assets/chips.png); background-position: -80px 0px; }
-.stakeIcon.blueStake { background-image: url(assets/chips.png); background-position: -60px 0px; }
-.stakeIcon.greenStake { background-image: url(assets/chips.png); background-position: -40px 0px; }
-.stakeIcon.redStake { background-image: url(assets/chips.png); background-position: -20px 0px; }
 .stakeIcon.whiteStake { background-image: url(assets/chips.png); background-position: 0px 0px; }
+.stakeIcon.redStake { background-image: url(assets/chips.png); background-position: -29px 0px; }
+.stakeIcon.greenStake { background-image: url(assets/chips.png); background-position: -58px 0px; }
+.stakeIcon.blueStake { background-image: url(assets/chips.png); background-position: -87px 0px; }
+.stakeIcon.blackStake { background-image: url(assets/chips.png); background-position: -116px 0px; }
+.stakeIcon.purpleStake { background-image: url(assets/chips.png); background-position: 0px -29px; }
+.stakeIcon.orangeStake { background-image: url(assets/chips.png); background-position: -29px -29px; }
+.stakeIcon.goldStake { background-image: url(assets/chips.png); background-position: -58px -29px; }
 
 .statLabel {
   display: block;
   font-size: 0.8em;
   color: #ccc;
   line-height: 1;
-}
-
-.stat.total {
-  background: #2a2a2a;
-  border: 1px solid #444;
 }
 
 .statValue {
@@ -226,46 +221,95 @@ body {
   font-weight: bold;
 }
 
+/* Center percentage text inside progress bars */
+.progressBar .progressPercent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  color: #111;
+  font-weight: bold;
+  pointer-events: none;
+}
+
+/* Ensure text is readable on gold bar */
+.progressBar .progressPercent#goldPercent {
+  color: #222;
+}
+
 /* Joker grid */
 #jokerGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-  gap: 4px;
-  margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+    gap: 4px;
+    margin-bottom: 20px;
+    justify-items: center;
+    padding: 10px;
+}
+
+.jokerItem {
+    position: relative;
+    width: 71px; /* Match joker width exactly */
+    min-height: 95px;
+    padding: 0;
+    margin: 0;
 }
 
 .jokerCard {
-  position: relative;
-  display: block;
-  width: 71px;
-  height: 94px;
-  padding: 0;
-  image-rendering: pixelated;
-  cursor: pointer;
-  z-index: 1;
-  border-radius: 6px;
-  overflow: hidden;
-  transition: transform 0.2s;
-  margin: 0 auto;
+    position: absolute;
+    display: block;
+    width: 71px;
+    height: 95px;
+    padding: 0;
+    margin: 0;
+    image-rendering: pixelated;
+    cursor: pointer;
+    z-index: 1;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.2s;
+    background-color: transparent;
+    background-image: url(assets/Jokers.png);
+    background-repeat: no-repeat;
+    background-size: 710px 1520px; /* Actual sprite sheet dimensions */
+    inset: 0;
+}
+
+/* For soul cards, layer the icon on top of the background */
+.jokerCard[data-soul="true"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(assets/Jokers.png);
+    background-repeat: no-repeat;
+    background-size: 710px 1520px;
+    background-position: var(--icon-pos);
+    z-index: 15; /* Higher than the stake sticker (z-index: 10) */
 }
 
 .jokerCard:hover {
-  transform: scale(1.05);
-  z-index: 2;
+    transform: scale(1.05);
+    z-index: 2;
 }
 
-.jokerCard:after {
-  content: '';
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background: inherit;
-  position: absolute;
-  mask-image: url(assets/Jokers.png);
-  mask-position: inherit;
-  mask-mode: alpha;
-  mask-size: 710px 1520px;
+.jokerCard:before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+    background-size: 75px 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    z-index: 10;
+    pointer-events: none;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
 }
 
 .jokerCard:hover:after {
@@ -273,22 +317,6 @@ body {
 }
 
 /* Stake sticker on joker card */
-.jokerCard:before {
-  content: '';
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 15px;
-  height: 15px;
-  background-size: 15px 15px;
-  background-repeat: no-repeat;
-  background-position: center;
-  image-rendering: pixelated;
-  z-index: 10;
-  pointer-events: none;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
-}
-
 .jokerCard[data-stake="whiteStake"]:before {
   background-image: url(assets/chips.png);
   background-position: 0px 0px;
@@ -337,27 +365,17 @@ body {
   background-size: 75px 30px;
 }
 
-.jokerItem {
-  text-align: center;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Stake Editor */
 .stakeEditor {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(42, 42, 42, 0.95);
-  border-radius: 8px;
-  padding: 10px;
-  z-index: 100;
-  border: 2px solid #f5b143;
-  margin-top: 10px;
-  width: max-content;
+    position: absolute;
+    top: calc(100% + 15px); /* Add more space between joker and menu */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(42, 42, 42, 0.57);
+    padding: 10px;
+    border-radius: 6px;
+    z-index: 1000;
+    border: 2px solid #f5b143;
+    width: max-content;
 }
 
 .jokerCard.selected {
@@ -483,43 +501,43 @@ body {
 
 /* Tooltip styles (keeping existing) */
 .tooltip {
-  position: relative;
-  display: block;
-  width: fit-content;
-  margin: 0 auto;
+    position: relative;
+    width: 71px;
+    height: 95px;
+    display: block;
 }
 
 .tooltiptext {
-  visibility: hidden;
-  width: auto;
-  min-width: 100px;
-  max-width: 200px;
-  background-color: rgba(42, 42, 42, 0.9);
-  color: white;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 10px;
-  position: absolute;
-  z-index: 1000;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: visibility 0s 0.25s, opacity 0.25s ease;
-  font-size: 0.8em;
-  line-height: 1.4;
-  pointer-events: none;
-  white-space: nowrap;
+    visibility: hidden;
+    background-color: rgba(42, 42, 42, 0.57); /* Match sticker menu transparency */
+    color: #fff;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1000;
+    width: 200px;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: visibility 0s 0.1s, opacity 0.1s ease;
+    font-size: 0.8em;
+    line-height: 1.4;
+    pointer-events: none;
+    border: 2px solid #f5b143; /* Match sticker menu border */
 }
 
-.tooltip:hover .tooltiptext.hover-only {
-  visibility: visible;
-  opacity: 1;
-  transition-delay: 0.25s, 0.25s;
+.tooltiptext.hover-only {
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.tooltip .tooltiptext.click-only {
-  display: none;
+.tooltiptext.click-only {
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .jokerCard.selected + .tooltiptext.hover-only {
@@ -527,9 +545,11 @@ body {
 }
 
 .jokerCard.selected ~ .tooltiptext.click-only {
-  display: block;
-  visibility: visible;
-  opacity: 1;
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    z-index: 1000;
+    pointer-events: none; /* Allow clicking through */
 }
 
 .tooltiptext .title {
@@ -546,7 +566,7 @@ body {
 }
 
 .tooltiptext .desc {
-  color: #ccc;
+  color: #fff;
 }
 
 /* Responsive design */
@@ -829,6 +849,147 @@ body {
 .menuBtn.active {
   background: #f5b143;
   color: #1a1a1a;
+}
+
+.sortButtons {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.sortButtons input[type="radio"] {
+    display: none;
+}
+
+.sortButtons label {
+    padding: 5px 15px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sortButtons input[type="radio"]:checked + label {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Joker description colors */
+.mult {
+    color: #ff4d40 !important; /* Game's red multiplier color */
+    font-weight: bold;
+}
+
+.num {
+    color: #ff8f00 !important; /* Game's yellow-orange number color */
+    font-weight: bold;
+}
+
+.prob {
+    color: #35bd87 !important; /* Game's green probability color */
+    font-weight: bold;
+}
+
+.chip {
+    color: #009dff !important; /* Game's blue chip color */
+    font-weight: bold;
+}
+
+.shadow {
+    color: #ababab !important; /* Game's gray secondary text color */
+}
+
+.diamond {
+    color: #f15a27 !important; /* Game's orange diamond color */
+    font-weight: bold;
+}
+
+.heart {
+    color: #f11b51 !important; /* Game's red heart color */
+    font-weight: bold;
+}
+
+.spade {
+    color: #242c56 !important; /* Game's dark blue spade color */
+    font-weight: bold;
+}
+
+.club {
+    color: #074540 !important; /* Game's dark green club color */
+    font-weight: bold;
+}
+
+.money {
+    color: #f5b143 !important; /* Game's gold money color */
+    font-weight: bold;
+}
+
+.prod {
+    color: #fff !important; /* White text */
+    background-color: #ff4d40 !important; /* Red background */
+    border: 2px solid #ff4d40 !important;
+    border-radius: 3px !important;
+    padding: 0 2px !important;
+    font-weight: bold;
+}
+
+/* Animation for stake selection */
+@keyframes stampIn {
+    0% {
+        transform: scale(3) rotate(-15deg);
+        opacity: 0;
+        filter: brightness(2);
+    }
+    30% {
+        transform: scale(2) rotate(-10deg);
+        opacity: 0.8;
+        filter: brightness(1.5);
+    }
+    60% {
+        transform: scale(1.2) rotate(-5deg);
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+    80% {
+        transform: scale(0.9) rotate(0deg);
+        filter: brightness(1.1);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        filter: brightness(1);
+    }
+}
+
+.stickerBtn.selected {
+    animation: pulse 0.5s ease;
+    border-color: #f5b143;
+    box-shadow: 0 0 15px rgba(245, 177, 67, 0.8);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(245, 177, 67, 0);
+    }
+    50% {
+        transform: scale(1.3);
+        box-shadow: 0 0 20px rgba(245, 177, 67, 1);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(245, 177, 67, 0.8);
+    }
+}
+
+/* Remove stake animation class since we're not using it anymore */
+/* .stake-animation:before {
+    animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+} */
+
+/* Ensure the stake sticker is visible during animation */
+.jokerCard:before {
+    opacity: 1;
+    transform-origin: center;
+    transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
 }
 
 
