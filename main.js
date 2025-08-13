@@ -231,7 +231,6 @@ function createGameElement(game) {
     
     const date = new Date(game.date);
     const formattedDate = date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
         year: 'numeric', 
         month: 'long', 
         day: 'numeric' 
@@ -254,9 +253,11 @@ function createGameElement(game) {
     });
     
     gameDiv.innerHTML = `
-        <div class="gameDate">${formattedDate}</div>
-        <div class="gameJokers">
-            ${jokersHTML}
+        <div class="gameRow">
+            <div class="gameDate">${formattedDate}</div>
+            <div class="gameJokers">
+                ${jokersHTML}
+            </div>
         </div>
     `;
     
