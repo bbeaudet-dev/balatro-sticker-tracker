@@ -992,4 +992,199 @@ body {
     transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
 }
 
+/* Disable cursor pointer in read-only mode */
+.jokerCard[style*="cursor: default"] {
+  cursor: default !important;
+}
+
+/* Recent Games Section */
+#recentGamesSection {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  overflow: visible;
+}
+
+#recentGamesSection h2 {
+  color: #f5b143;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.gameEntry {
+  background: #333;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border-left: 4px solid #f5b143;
+}
+
+.gameDate {
+  color: #f5b143;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.gameJokers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  overflow: visible;
+}
+
+.jokerProgression {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 130px;
+  min-height: 140px;
+  padding: 10px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  border: 1px solid #444;
+  overflow: visible;
+}
+
+.jokerName {
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.9em;
+}
+
+.progressionArrow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.progressionArrow .stakeIcon {
+  width: 24px;
+  height: 24px;
+  background-size: 120px 48px;
+}
+
+.arrow {
+  color: #f5b143;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Stats section */
+
+/* Add Game button styling */
+.buttonGroup button#addGameBtn {
+  background: #9e74ce;
+}
+
+.buttonGroup button#addGameBtn:hover {
+  background: #8b5bb8;
+}
+
+/* Small joker cards for recent games */
+.jokerCardSmall {
+  width: 71px;
+  height: 95px;
+  background-image: url(assets/Jokers.png);
+  background-repeat: no-repeat;
+  background-size: 710px 1520px;
+  image-rendering: pixelated;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  margin: 0 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.jokerCardSmall:before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 16px;
+  height: 16px;
+  background-image: url(assets/chips.png);
+  background-repeat: no-repeat;
+  background-size: 145px 58px;
+  image-rendering: pixelated;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.jokerCardSmall[data-stake="noStake"]:before {
+  display: none;
+}
+
+.jokerCardSmall[data-stake="whiteStake"]:before { background-position: 0px 0px; }
+.jokerCardSmall[data-stake="redStake"]:before { background-position: -16px 0px; }
+.jokerCardSmall[data-stake="greenStake"]:before { background-position: -32px 0px; }
+.jokerCardSmall[data-stake="blueStake"]:before { background-position: -48px 0px; }
+.jokerCardSmall[data-stake="blackStake"]:before { background-position: -64px 0px; }
+.jokerCardSmall[data-stake="purpleStake"]:before { background-position: 0px -16px; }
+.jokerCardSmall[data-stake="orangeStake"]:before { background-position: -16px -16px; }
+.jokerCardSmall[data-stake="goldStake"]:before { background-position: -32px -16px; }
+
+/* Soul card handling for small cards */
+.jokerCardSmall[data-soul="true"]:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(assets/Jokers.png);
+  background-repeat: no-repeat;
+  background-size: 710px 1520px;
+  image-rendering: pixelated;
+  background-position: var(--icon-pos);
+  pointer-events: none;
+}
+
+/* Fix stake icon sizing in progression arrows */
+.progressionArrow .stakeIcon {
+  width: 24px;
+  height: 24px;
+  background-size: 120px 48px;
+  image-rendering: pixelated;
+}
+
+.progressionArrow .stakeIcon.whiteStake { background-position: 0px 0px; }
+.progressionArrow .stakeIcon.redStake { background-position: -24px 0px; }
+.progressionArrow .stakeIcon.greenStake { background-position: -48px 0px; }
+.progressionArrow .stakeIcon.blueStake { background-position: -72px 0px; }
+.progressionArrow .stakeIcon.blackStake { background-position: -96px 0px; }
+.progressionArrow .stakeIcon.purpleStake { background-position: 0px -24px; }
+.progressionArrow .stakeIcon.orangeStake { background-position: -24px -24px; }
+.progressionArrow .stakeIcon.goldStake { background-position: -48px -24px; }
+
+/* Joker card container for recent games */
+.jokerCardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+  padding: 10px;
+  overflow: visible;
+}
+
+.jokerProgression {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 130px;
+  min-height: 140px;
+  padding: 15px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  border: 1px solid #444;
+  overflow: visible;
+}
+
 

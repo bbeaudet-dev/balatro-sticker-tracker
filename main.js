@@ -4,6 +4,39 @@ let filteredJokers = [];
 let searchTerm = '';
 let sortBy = 'collection';
 
+// Read-only mode - set to true for live site deployment
+const READ_ONLY_MODE = false; // Change to true for live site
+
+// Recent games tracking
+let recentGames = [
+    {
+        date: '2024-08-12',
+        jokers: [
+            { name: 'Bull', from: 'blackStake', to: 'goldStake' },
+            { name: 'Baseball Card', from: 'purpleStake', to: 'goldStake' },
+            { name: 'Seeing Double', from: 'blueStake', to: 'goldStake' }
+        ]
+    },
+    {
+        date: '2024-08-01',
+        jokers: [
+            { name: 'Stone Joker', from: 'blueStake', to: 'goldStake' },
+            { name: 'Blackboard', from: 'purpleStake', to: 'goldStake' },
+            { name: 'Sly Joker', from: 'noStake', to: 'goldStake' },
+            { name: 'Marble Joker', from: 'greenStake', to: 'goldStake' },
+            { name: 'Blue Joker', from: 'purpleStake', to: 'goldStake' }
+        ]
+    },
+    {
+        date: '2024-07-23',
+        jokers: [
+            { name: 'Sock and Buskin', from: 'redStake', to: 'goldStake' },
+            { name: 'Dusk', from: 'redStake', to: 'goldStake' },
+            { name: 'Wrathful Joker', from: 'purpleStake', to: 'goldStake' }
+        ]
+    }
+];
+
 
 // Stake types
 const stakeTypes = [
@@ -64,7 +97,9 @@ function processDescription(description, jokerValue = 0) {
 document.addEventListener('DOMContentLoaded', async function() {
     initializeJokerData();
     await loadStickerData();
+    loadRecentGames();
     renderJokerGrid();
+    renderRecentGames();
     updateStats();
 });
 
@@ -176,6 +211,56 @@ function renderJokerGrid() {
         const jokerElement = createJokerElement(joker);
         grid.appendChild(jokerElement);
     });
+}
+
+// Render recent games section
+function renderRecentGames() {
+    const container = document.getElementById('recentGamesList');
+    container.innerHTML = '';
+    
+    recentGames.forEach(game => {
+        const gameElement = createGameElement(game);
+        container.appendChild(gameElement);
+    });
+}
+
+// Create a game element
+function createGameElement(game) {
+    const gameDiv = document.createElement('div');
+    gameDiv.className = 'gameEntry';
+    
+    const date = new Date(game.date);
+    const formattedDate = date.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    let jokersHTML = '';
+    game.jokers.forEach(joker => {
+        jokersHTML += `
+            <div class="jokerProgression">
+                <div class="jokerCardContainer">
+                    ${createJokerCardComponent(joker.name, 'noStake', 'small')}
+                </div>
+                <div class="progressionArrow">
+                    <div class="stakeIcon ${joker.from}"></div>
+                    <div class="arrow">→</div>
+                    <div class="stakeIcon ${joker.to}"></div>
+                </div>
+            </div>
+        `;
+    });
+    
+    gameDiv.innerHTML = `
+        <div class="gameDate">${formattedDate}</div>
+        <div class="gameJokers">
+            ${jokersHTML}
+        </div>
+    `;
+    
+    return gameDiv;
 }
 
 // Create a joker element
@@ -492,6 +577,184 @@ async function loadStickerData() {
                 console.error('Error loading saved data:', error);
             }
         }
+    }
+}
+
+// Import sticker data from JSON file
+function importStickerData() {
+    if (READ_ONLY_MODE) {
+        alert('This feature is disabled in read-only mode.');
+        return;
+    }
+    
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.jokers && Array.isArray(data.jokers)) {
+                        // Clear current data
+                        jokerData.forEach(joker => {
+                            joker.stakeSticker = 'noStake';
+                        });
+                        
+                        // Load imported data
+                        data.jokers.forEach(savedJoker => {
+                            const joker = jokerData.find(j => j.id === savedJoker.id);
+                            if (joker && savedJoker.stakeSticker) {
+                                joker.stakeSticker = savedJoker.stakeSticker;
+                                console.log(`Loading stake ${savedJoker.stakeSticker} for joker ${savedJoker.name} (ID: ${savedJoker.id})`);
+                            }
+                        });
+                        
+                        // Save to localStorage and update display
+                        saveStickerData();
+                        renderJokerGrid();
+                        updateStats();
+                        
+                        alert(`Successfully imported ${data.jokers.length} joker stakes!`);
+                    } else {
+                        alert('Invalid file format. Please select a valid Balatro stakes JSON file.');
+                    }
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    alert('Error importing data. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
+}
+
+// Add a new game to recent games
+function addRecentGame(date, jokers) {
+    if (READ_ONLY_MODE) {
+        alert('This feature is disabled in read-only mode.');
+        return;
+    }
+    
+    const newGame = {
+        date: date,
+        jokers: jokers
+    };
+    
+    recentGames.unshift(newGame); // Add to beginning of array
+    
+    // Keep only the last 10 games
+    if (recentGames.length > 10) {
+        recentGames = recentGames.slice(0, 10);
+    }
+    
+    saveRecentGames();
+    renderRecentGames();
+}
+
+// Save recent games to localStorage
+function saveRecentGames() {
+    try {
+        localStorage.setItem('balatroRecentGames', JSON.stringify(recentGames));
+        console.log('Recent games saved to localStorage');
+    } catch (error) {
+        console.error('Error saving recent games:', error);
+    }
+}
+
+// Load recent games from localStorage
+function loadRecentGames() {
+    try {
+        const saved = localStorage.getItem('balatroRecentGames');
+        if (saved) {
+            recentGames = JSON.parse(saved);
+            console.log('Recent games loaded from localStorage');
+        }
+    } catch (error) {
+        console.error('Error loading recent games:', error);
+    }
+}
+
+// Get joker position by name
+function getJokerPositionByName(jokerName) {
+    const joker = jokerData.find(j => j.name === jokerName);
+    return joker ? joker.position : null;
+}
+
+// Create a reusable joker card component
+function createJokerCardComponent(jokerName, stakeType = 'noStake', size = 'normal') {
+    const position = getJokerPositionByName(jokerName);
+    if (!position) {
+        return `<span class="jokerName">${jokerName}</span>`; // Fallback to text if joker not found
+    }
+    
+    const [i, j] = position;
+    const jokerStringValue = jokerString(i, j, stakeType);
+    
+    // Check if this is a soul card
+    const soulCards = {
+        '8,3': true, '8,4': true, '8,5': true, '8,6': true, '8,7': true, '12,4': true
+    };
+    const isSoulCard = `${i},${j}` in soulCards;
+    
+    const sizeClass = size === 'small' ? 'jokerCardSmall' : 'jokerCard';
+    
+    let cardHTML = `<div class="${sizeClass}${jokerStringValue}" data-stake="${stakeType}" title="${jokerName}"`;
+    
+    if (size === 'small') {
+        cardHTML += ` onmousemove="hoverCard(event)" onmouseout="noHoverCard(event)"`;
+    } else {
+        cardHTML += ` onclick="showStakeEditor(${jokerData.find(j => j.name === jokerName)?.id})" onmousemove="hoverCard(event)" onmouseout="noHoverCard(event)"`;
+    }
+    
+    cardHTML += `></div>`;
+    
+    // Set CSS custom property for soul cards
+    if (isSoulCard) {
+        const iconPos = jokerStringValue.match(/data-icon-pos="([^"]+)"/);
+        if (iconPos) {
+            cardHTML = cardHTML.replace('></div>', ` style="--icon-pos: ${iconPos[1]};"></div>`);
+        }
+    }
+    
+    return cardHTML;
+}
+
+// Show dialog to add a new game
+function showAddGameDialog() {
+    if (READ_ONLY_MODE) {
+        alert('This feature is disabled in read-only mode.');
+        return;
+    }
+    
+    const date = prompt('Enter the date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+    if (!date) return;
+    
+    const jokersInput = prompt('Enter jokers (format: "Joker Name:fromStake:toStake, Another Joker:fromStake:toStake"):\n\nExample: "Bull:blackStake:goldStake, Baseball Card:purpleStake:goldStake"');
+    if (!jokersInput) return;
+    
+    const jokers = [];
+    const jokerEntries = jokersInput.split(',').map(s => s.trim());
+    
+    for (const entry of jokerEntries) {
+        const parts = entry.split(':');
+        if (parts.length === 3) {
+            jokers.push({
+                name: parts[0].trim(),
+                from: parts[1].trim(),
+                to: parts[2].trim()
+            });
+        }
+    }
+    
+    if (jokers.length > 0) {
+        addRecentGame(date, jokers);
+        alert(`Added game with ${jokers.length} joker progressions!`);
+    } else {
+        alert('No valid joker entries found. Please check the format.');
     }
 }
 

@@ -42,6 +42,9 @@
           
           <div class="buttonGroup">
             <button type="button" id="resetBtn" onclick="resetAllStickers()">Reset All</button>
+            <button type="button" id="exportBtn" onclick="exportStickerData()">Export Data</button>
+            <button type="button" id="importBtn" onclick="importStickerData()">Import Data</button>
+            <button type="button" id="addGameBtn" onclick="showAddGameDialog()">Add Game</button>
           </div>
         </div>
         
@@ -110,6 +113,11 @@
       </div>
       
       <div id="jokerGrid"></div>
+      
+      <div id="recentGamesSection">
+        <h2>Recent Games</h2>
+        <div id="recentGamesList"></div>
+      </div>
       
       <div id="footer">
         <a href='https://www.playbalatro.com/' alt='Balatro Website'><img src='assets/Balatro logo-new.png' style='height: 3em;'></a><br>
