@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2025-08-08T02:40:43.736Z",
+  "lastUpdated": "2025-08-13T05:07:02.266Z",
   "jokers": [
     {
       "id": 0,
@@ -224,7 +224,7 @@
     {
       "id": 44,
       "name": "Seeing Double",
-      "stakeSticker": "blueStake"
+      "stakeSticker": "goldStake"
     },
     {
       "id": 45,
@@ -684,12 +684,12 @@
     {
       "id": 136,
       "name": "Baseball Card",
-      "stakeSticker": "purpleStake"
+      "stakeSticker": "goldStake"
     },
     {
       "id": 137,
       "name": "Bull",
-      "stakeSticker": "blackStake"
+      "stakeSticker": "goldStake"
     },
     {
       "id": 138,

@@ -59,7 +59,7 @@ This tool was converted from the original Balatro Calculator to focus specifical
 
 - Original Balatro Calculator by [@EFHIII](https://github.com/EFHIII)
 - Balatro game by LocalThunk
-- Converted to stake tracker by [@benbeau](https://github.com/benbeau)
+- Converted to stake tracker by [@bbeaudet-dev](https://github.com/bbeaudet-dev)
 
 ## License
 
