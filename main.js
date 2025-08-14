@@ -11,6 +11,9 @@ let allUsers = {};
 let canEdit = false; // Simplified: just track if editing is enabled
 let currentPassword = null; // Store password for current session
 
+// Board caching system
+let boardCache = {}; // Cache loaded board data to avoid repeated API calls
+
 // Game mode for adding game progress
 let gameMode = false;
 let selectedJokers = []; // Track jokers selected for game mode
@@ -154,52 +157,85 @@ function renderBoardList() {
 // Select a board
 async function selectBoard(username) {
     try {
+        // Check if we have this board cached
+        if (boardCache[username]) {
+            console.log(`Loading ${username} from cache`);
+            loadBoardFromCache(username);
+            return;
+        }
+        
+        console.log(`Loading ${username} from database`);
         const response = await fetch(`/api/users/${username}/data`);
         if (response.ok) {
             currentUser = username;
             currentUserData = await response.json();
             
-            // Load joker data
-            if (currentUserData.jokers && Array.isArray(currentUserData.jokers)) {
-                currentUserData.jokers.forEach(savedJoker => {
-                    const joker = jokerData.find(j => j.id === savedJoker.id);
-                    if (joker && savedJoker.stakeSticker) {
-                        joker.stakeSticker = savedJoker.stakeSticker;
-                    }
-                });
-            }
+            // Cache the board data
+            boardCache[username] = {
+                jokers: [...currentUserData.jokers],
+                recentGames: [...currentUserData.recentGames],
+                timestamp: Date.now()
+            };
             
-            // Load recent games
-            recentGames = currentUserData.recentGames || [];
-            
-            // Update UI - reset authentication when switching boards
-            document.getElementById('viewingUser').textContent = `${allUsers[username].displayName}'s board`;
-            
-            // Check if we're already authenticated for this board
-            if (canEdit) {
-                document.getElementById('loginStatus').textContent = 'Edits enabled';
-            } else {
-                // Reset authentication when switching to a different board
-                canEdit = false;
-                currentPassword = null;
-                document.getElementById('loginStatus').textContent = 'Edits disabled';
-            }
-            
-    renderJokerGrid();
-    renderRecentGames();
-    updateStats();
-            updateUIForAuth();
-            
-            // Apply current sort to the loaded data
-            applyFilters();
-            
-            // Re-render board list to update highlighting
-            renderBoardList();
+            loadBoardData(username);
         }
     } catch (error) {
         console.error('Error loading board:', error);
         alert('Error loading board data');
     }
+}
+
+// Load board data from cache or fresh data
+function loadBoardData(username) {
+    // Reset all joker stakes to default
+    jokerData.forEach(joker => {
+        joker.stakeSticker = 'noStake';
+    });
+    
+    // Load joker data
+    if (currentUserData.jokers && Array.isArray(currentUserData.jokers)) {
+        currentUserData.jokers.forEach(savedJoker => {
+            const joker = jokerData.find(j => j.id === savedJoker.id);
+            if (joker && savedJoker.stakeSticker) {
+                joker.stakeSticker = savedJoker.stakeSticker;
+            }
+        });
+    }
+    
+    // Load recent games
+    recentGames = currentUserData.recentGames || [];
+    
+    // Update UI - reset authentication when switching boards
+    document.getElementById('viewingUser').textContent = `${allUsers[username].displayName}'s board`;
+    
+    // Check if we're already authenticated for this board
+    if (canEdit) {
+        document.getElementById('loginStatus').textContent = 'Edits enabled';
+    } else {
+        // Reset authentication when switching to a different board
+        canEdit = false;
+        currentPassword = null;
+        document.getElementById('loginStatus').textContent = 'Edits disabled';
+    }
+    
+    renderJokerGrid();
+    renderRecentGames();
+    updateStats();
+    updateUIForAuth();
+    
+    // Apply current sort to the loaded data
+    applyFilters();
+    
+    // Re-render board list to update highlighting
+    renderBoardList();
+}
+
+// Load board from cache
+function loadBoardFromCache(username) {
+    currentUser = username;
+    currentUserData = boardCache[username];
+    
+    loadBoardData(username);
 }
 
 // Show dummy board with sample data
@@ -850,6 +886,15 @@ async function saveUserData() {
             const goldCount = jokerData.filter(j => j.stakeSticker === 'goldStake').length;
             if (allUsers[currentUser]) {
                 allUsers[currentUser].goldCount = goldCount;
+            }
+            
+            // Update the cache with the new data
+            if (boardCache[currentUser]) {
+                boardCache[currentUser] = {
+                    jokers: [...data.jokers],
+                    recentGames: [...data.recentGames],
+                    timestamp: Date.now()
+                };
             }
         }
     } catch (error) {

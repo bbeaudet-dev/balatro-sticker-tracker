@@ -38,6 +38,15 @@ async function initializeDatabase() {
       )
     `);
 
+    // Create indexes for better performance
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)
+    `);
+    
+    await client.query(`
+      CREATE INDEX IF NOT EXISTS idx_user_data_username ON user_data(username)
+    `);
+
     client.release();
     console.log('Database initialized successfully');
   } catch (error) {
