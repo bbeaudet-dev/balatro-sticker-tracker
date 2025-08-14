@@ -773,7 +773,8 @@ async function saveUserData() {
             },
             body: JSON.stringify({
                 password: currentPassword,
-                data: data
+                jokers: data.jokers,
+                recentGames: data.recentGames
             })
         });
         
