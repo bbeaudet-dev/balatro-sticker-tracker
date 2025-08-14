@@ -6,8 +6,13 @@ const db = require('./db');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Initialize database on startup
-db.initializeDatabase().then(() => {
+// Initialize database on startup with timeout
+Promise.race([
+    db.initializeDatabase(),
+    new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Database initialization timeout')), 10000)
+    )
+]).then(() => {
     console.log('Database initialized successfully');
 }).catch(error => {
     console.error('Error initializing database:', error);
