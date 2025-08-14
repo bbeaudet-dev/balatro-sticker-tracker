@@ -159,26 +159,6 @@ function renderBoardList() {
         };
         boardList.appendChild(moreBtn);
     }
-    
-    // Add refresh button
-    const refreshBtn = document.createElement('button');
-    refreshBtn.className = 'boardButton refresh';
-    refreshBtn.textContent = '🔄 Refresh';
-    refreshBtn.onclick = async () => {
-        refreshBtn.textContent = '🔄 Refreshing...';
-        refreshBtn.disabled = true;
-        
-        // Refresh cache for all boards
-        const refreshPromises = Object.keys(allUsers).map(username => refreshBoardCache(username));
-        await Promise.all(refreshPromises);
-        
-        // Re-render the board list
-        renderBoardList();
-        
-        refreshBtn.textContent = '🔄 Refresh';
-        refreshBtn.disabled = false;
-    };
-    boardList.appendChild(refreshBtn);
 }
 
 // Select a board
