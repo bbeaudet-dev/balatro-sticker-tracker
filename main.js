@@ -76,12 +76,20 @@ function processDescription(description, jokerValue = 0) {
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
     initializeJokerData();
+    
+    // Show loading state immediately
+    renderBoardList();
+    
+    // Load users in background
     await loadAllUsers();
     renderBoardList();
     
-    // Auto-load Ben Beau's board if it exists
+    // Auto-load Ben Beau's board if it exists, otherwise show dummy board
     if (allUsers['benbeau']) {
         await selectBoard('benbeau');
+    } else {
+        // Show dummy board with sample data
+        showDummyBoard();
     }
     
     updateUIForAuth();
@@ -106,7 +114,7 @@ function renderBoardList() {
     boardList.innerHTML = '';
     
     if (Object.keys(allUsers).length === 0) {
-        boardList.innerHTML = '<p>No boards available. Create the first one!</p>';
+        boardList.innerHTML = '<p>Fetching data...</p>';
         return;
     }
     
@@ -192,6 +200,53 @@ async function selectBoard(username) {
         console.error('Error loading board:', error);
         alert('Error loading board data');
     }
+}
+
+// Show dummy board with sample data
+function showDummyBoard() {
+    currentUser = 'demo';
+    currentUserData = {
+        jokers: [],
+        recentGames: []
+    };
+    
+    // Set some sample joker stakes to show the app functionality
+    const sampleJokers = [
+        { id: 'joker_1', stakeSticker: 'goldStake' },
+        { id: 'joker_2', stakeSticker: 'purpleStake' },
+        { id: 'joker_3', stakeSticker: 'orangeStake' },
+        { id: 'joker_4', stakeSticker: 'blackStake' },
+        { id: 'joker_5', stakeSticker: 'blueStake' }
+    ];
+    
+    sampleJokers.forEach(sample => {
+        const joker = jokerData.find(j => j.id === sample.id);
+        if (joker) {
+            joker.stakeSticker = sample.stakeSticker;
+        }
+    });
+    
+    // Add some sample recent games
+    recentGames = [
+        {
+            date: '2025-08-14',
+            jokers: [
+                { name: 'Joker', from: 'whiteStake', to: 'goldStake' },
+                { name: 'Greedy Joker', from: 'redStake', to: 'purpleStake' }
+            ]
+        }
+    ];
+    
+    document.getElementById('viewingUser').textContent = 'Demo Board';
+    document.getElementById('loginStatus').textContent = 'Edits disabled';
+    canEdit = false;
+    currentPassword = null;
+    
+    renderJokerGrid();
+    renderRecentGames();
+    updateStats();
+    updateUIForAuth();
+    applyFilters();
 }
 
 // Show create board dialog

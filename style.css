@@ -1372,6 +1372,7 @@ body {
     background-repeat: no-repeat;
     background-size: 120px 48px;
     image-rendering: pixelated;
+    will-change: transform;
 }
 
 .boardGold .stakeIcon.goldStake {
