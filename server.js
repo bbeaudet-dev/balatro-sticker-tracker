@@ -7,8 +7,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Initialize database on startup
-db.initializeDatabase().catch(error => {
+db.initializeDatabase().then(() => {
+    console.log('Database initialized successfully');
+}).catch(error => {
     console.error('Error initializing database:', error);
+    console.error('Database connection details:', {
+        hasUrl: !!process.env.DATABASE_URL,
+        urlLength: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0
+    });
     // Don't fail the server startup if this fails
 });
 

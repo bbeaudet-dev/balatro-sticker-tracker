@@ -1,6 +1,9 @@
 const { Pool } = require('pg');
 
 // Database connection configuration
+console.log('Setting up database connection...');
+console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
