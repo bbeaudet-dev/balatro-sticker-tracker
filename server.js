@@ -6,8 +6,16 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Ensure data directories exist
+// Check if we're on Vercel (read-only file system)
+const isVercel = process.env.VERCEL === '1';
+
+// Ensure data directories exist (only if not on Vercel)
 async function ensureDataDirectories() {
+    if (isVercel) {
+        console.log('Running on Vercel - file system is read-only');
+        return;
+    }
+    
     const dataDir = path.join(__dirname, 'data');
     const privateDir = path.join(__dirname, 'private');
     
@@ -72,7 +80,8 @@ app.get('/api/users', async (req, res) => {
         res.json({ users: publicUsers });
     } catch (error) {
         console.error('Error reading users:', error);
-        res.status(500).json({ error: 'Failed to read users' });
+        // Return empty users object if file doesn't exist
+        res.json({ users: {} });
     }
 });
 
@@ -80,6 +89,11 @@ app.get('/api/users', async (req, res) => {
 app.post('/api/users', async (req, res) => {
     try {
         const { username, password, displayName } = req.body;
+        
+        // Check if we're on Vercel (read-only file system)
+        if (isVercel) {
+            return res.status(503).json({ error: 'User creation not available on Vercel. Please use local development or a different hosting service.' });
+        }
         
         if (!validateUsername(username)) {
             return res.status(400).json({ error: 'Invalid username (max 15 chars, alphanumeric only)' });
@@ -156,7 +170,8 @@ app.get('/api/users/:username/data', async (req, res) => {
         res.json(users.users[username].data);
     } catch (error) {
         console.error('Error reading user data:', error);
-        res.status(500).json({ error: 'Failed to read user data' });
+        // Return empty data if file doesn't exist
+        res.json({ jokers: [], recentGames: [] });
     }
 });
 
@@ -165,6 +180,11 @@ app.post('/api/users/:username/data', async (req, res) => {
     try {
         const { username } = req.params;
         const { password, data } = req.body;
+        
+        // Check if we're on Vercel (read-only file system)
+        if (isVercel) {
+            return res.status(503).json({ error: 'Data persistence not available on Vercel. Please use local development or a different hosting service.' });
+        }
         
         const filePath = path.join(__dirname, 'private', 'users.json');
         const usersData = await fs.readFile(filePath, 'utf8');
