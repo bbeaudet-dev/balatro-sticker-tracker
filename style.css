@@ -512,9 +512,11 @@ body {
 /* Tooltip styles (keeping existing) */
 .tooltip {
     position: relative;
-    width: 71px;
+    width: 100%;
     height: 95px;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .tooltiptext {
@@ -604,8 +606,8 @@ body {
   }
   
   #jokerGrid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
   }
   
   .jokerName {
@@ -1351,22 +1353,29 @@ body {
 .boardName {
     font-weight: bold;
     margin-bottom: 4px;
-    font-size: 0.9em;
+    font-size: 1.0em;
 }
 
 .boardGold {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 0.8em;
+    font-size: 1.0em;
     color: #ffd700;
     font-weight: bold;
 }
 
 .boardGold .stakeIcon {
-    width: 16px;
-    height: 16px;
-    background-size: 16px 16px;
+    width: 24px;
+    height: 24px;
+    background-image: url(assets/chips.png);
+    background-repeat: no-repeat;
+    background-size: 120px 48px;
+    image-rendering: pixelated;
+}
+
+.boardGold .stakeIcon.goldStake {
+    background-position: -48px -24px;
 }
 
 #createBoardBtn {

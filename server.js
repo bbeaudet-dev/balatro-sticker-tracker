@@ -39,12 +39,20 @@ async function ensureDataDirectories() {
 }
 
 // Initialize data directories
-ensureDataDirectories().catch(console.error);
+ensureDataDirectories().catch(error => {
+    console.error('Error initializing data directories:', error);
+    // Don't fail the server startup if this fails
+});
 
 // Serve static files from the root directory
 app.use(express.static('.'));
 app.use('/data', express.static('data')); // Serve data directory
 app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Generate random board ID
 function generateBoardId() {
@@ -238,4 +246,6 @@ app.post('/save-stakes', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Vercel: ${isVercel ? 'yes' : 'no'}`);
 }); 
