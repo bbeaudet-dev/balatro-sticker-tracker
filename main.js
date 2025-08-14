@@ -132,11 +132,18 @@ function renderBoardList() {
             boardBtn.classList.add('currentBoard');
         }
         boardBtn.onclick = () => selectBoard(username);
+        
+        // Calculate gold count from cached data or use stored value
+        let goldCount = userData.goldCount;
+        if (boardCache[username] && boardCache[username].jokers) {
+            goldCount = boardCache[username].jokers.filter(j => j.stakeSticker === 'goldStake').length;
+        }
+        
         boardBtn.innerHTML = `
             <div class="boardName">${userData.displayName}</div>
             <div class="boardGold">
                 <div class="stakeIcon goldStake"></div>
-                <span>${userData.goldCount}</span>
+                <span>${goldCount}</span>
             </div>
         `;
         boardList.appendChild(boardBtn);
@@ -152,6 +159,26 @@ function renderBoardList() {
         };
         boardList.appendChild(moreBtn);
     }
+    
+    // Add refresh button
+    const refreshBtn = document.createElement('button');
+    refreshBtn.className = 'boardButton refresh';
+    refreshBtn.textContent = '🔄 Refresh';
+    refreshBtn.onclick = async () => {
+        refreshBtn.textContent = '🔄 Refreshing...';
+        refreshBtn.disabled = true;
+        
+        // Refresh cache for all boards
+        const refreshPromises = Object.keys(allUsers).map(username => refreshBoardCache(username));
+        await Promise.all(refreshPromises);
+        
+        // Re-render the board list
+        renderBoardList();
+        
+        refreshBtn.textContent = '🔄 Refresh';
+        refreshBtn.disabled = false;
+    };
+    boardList.appendChild(refreshBtn);
 }
 
 // Select a board
@@ -236,6 +263,25 @@ function loadBoardFromCache(username) {
     currentUserData = boardCache[username];
     
     loadBoardData(username);
+}
+
+// Refresh board cache from database
+async function refreshBoardCache(username) {
+    try {
+        console.log(`Refreshing cache for ${username}`);
+        const response = await fetch(`/api/users/${username}/data`);
+        if (response.ok) {
+            const freshData = await response.json();
+            boardCache[username] = {
+                jokers: [...freshData.jokers],
+                recentGames: [...freshData.recentGames],
+                timestamp: Date.now()
+            };
+            console.log(`Cache refreshed for ${username}`);
+        }
+    } catch (error) {
+        console.error(`Error refreshing cache for ${username}:`, error);
+    }
 }
 
 // Show dummy board with sample data

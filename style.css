@@ -1350,6 +1350,28 @@ body {
     color: #888;
 }
 
+.boardButton.refresh {
+    background: #2a4a2a;
+    border-color: #4a6a4a;
+    justify-content: center;
+    text-align: center;
+    color: #8bc34a;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.boardButton.refresh:hover {
+    background: #3a5a3a;
+    border-color: #5a7a5a;
+}
+
+.boardButton.refresh:disabled {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #666;
+    cursor: not-allowed;
+}
+
 .boardName {
     font-weight: bold;
     margin-bottom: 4px;
