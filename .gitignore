@@ -1,0 +1,5 @@
+# Private user data
+private/
+node_modules/
+.DS_Store
+*.log
