@@ -1,42 +1,32 @@
 const express = require('express');
-const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
+const db = require('./db');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Ensure data directories exist
-async function ensureDataDirectories() {
-    const dataDir = path.join(__dirname, 'data');
-    const privateDir = path.join(__dirname, 'private');
-    
-    try {
-        await fs.access(dataDir);
-    } catch {
-        await fs.mkdir(dataDir);
-        // Create empty stakes.json if it doesn't exist
-        const filePath = path.join(dataDir, 'stakes.json');
-        await fs.writeFile(filePath, JSON.stringify({ lastUpdated: '', jokers: [] }));
-    }
-    
-    try {
-        await fs.access(privateDir);
-    } catch {
-        await fs.mkdir(privateDir);
-        // Create empty users.json if it doesn't exist
-        const usersPath = path.join(privateDir, 'users.json');
-        await fs.writeFile(usersPath, JSON.stringify({ users: {}, lastUpdated: new Date().toISOString() }));
-    }
-}
-
-// Initialize data directories
-ensureDataDirectories().catch(console.error);
+// Initialize database on startup
+db.initializeDatabase().then(() => {
+    console.log('Database initialized successfully');
+}).catch(error => {
+    console.error('Error initializing database:', error);
+    console.error('Database connection details:', {
+        hasUrl: !!process.env.DATABASE_URL,
+        urlLength: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0
+    });
+    // Don't fail the server startup if this fails
+});
 
 // Serve static files from the root directory
 app.use(express.static('.'));
 app.use('/data', express.static('data')); // Serve data directory
 app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
 // Generate random board ID
 function generateBoardId() {
@@ -52,27 +42,22 @@ function validateUsername(username) {
 // Get users data
 app.get('/api/users', async (req, res) => {
     try {
-        const filePath = path.join(__dirname, 'private', 'users.json');
-        const data = await fs.readFile(filePath, 'utf8');
-        const users = JSON.parse(data);
+        const users = await db.getAllUsers();
         
-        // Return only public user info (no passwords)
+        // Convert to the expected format
         const publicUsers = {};
-        for (const [username, userData] of Object.entries(users.users)) {
-            const goldCount = userData.data.jokers ? 
-                userData.data.jokers.filter(j => j.stakeSticker === 'goldStake').length : 0;
-            
-            publicUsers[username] = {
-                displayName: userData.displayName,
-                boardId: userData.boardId,
-                goldCount: goldCount
+        users.forEach(user => {
+            publicUsers[user.username] = {
+                displayName: user.display_name,
+                boardId: user.board_id,
+                goldCount: user.gold_count
             };
-        }
+        });
         
         res.json({ users: publicUsers });
     } catch (error) {
         console.error('Error reading users:', error);
-        res.status(500).json({ error: 'Failed to read users' });
+        res.status(500).json({ error: 'Failed to get users' });
     }
 });
 
@@ -89,32 +74,17 @@ app.post('/api/users', async (req, res) => {
             return res.status(400).json({ error: 'Password is required' });
         }
         
-        const filePath = path.join(__dirname, 'private', 'users.json');
-        const data = await fs.readFile(filePath, 'utf8');
-        const users = JSON.parse(data);
-        
-        if (users.users[username]) {
-            return res.status(400).json({ error: 'Username already exists' });
-        }
-        
         const boardId = generateBoardId();
-        users.users[username] = {
-            password: password,
-            displayName: displayName || username,
-            boardId: boardId,
-            data: {
-                lastUpdated: new Date().toISOString(),
-                jokers: [],
-                recentGames: []
-            }
-        };
-        users.lastUpdated = new Date().toISOString();
+        await db.createUser(username, password, displayName || username, boardId);
         
-        await fs.writeFile(filePath, JSON.stringify(users, null, 2));
         res.json({ success: true, boardId: boardId });
     } catch (error) {
         console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Failed to create user' });
+        if (error.code === '23505') { // PostgreSQL unique constraint violation
+            res.status(400).json({ error: 'Username already exists' });
+        } else {
+            res.status(500).json({ error: 'Failed to create user' });
+        }
     }
 });
 
@@ -122,18 +92,16 @@ app.post('/api/users', async (req, res) => {
 app.post('/api/auth', async (req, res) => {
     try {
         const { username, password } = req.body;
-        const filePath = path.join(__dirname, 'private', 'users.json');
-        const data = await fs.readFile(filePath, 'utf8');
-        const users = JSON.parse(data);
+        const user = await db.authenticateUser(username, password);
         
-        if (!users.users[username] || users.users[username].password !== password) {
+        if (!user) {
             return res.status(401).json({ error: 'Invalid username or password' });
         }
         
         res.json({ 
             success: true, 
-            displayName: users.users[username].displayName,
-            boardId: users.users[username].boardId
+            displayName: user.display_name,
+            boardId: user.board_id
         });
     } catch (error) {
         console.error('Error authenticating:', error);
@@ -145,18 +113,15 @@ app.post('/api/auth', async (req, res) => {
 app.get('/api/users/:username/data', async (req, res) => {
     try {
         const { username } = req.params;
-        const filePath = path.join(__dirname, 'private', 'users.json');
-        const data = await fs.readFile(filePath, 'utf8');
-        const users = JSON.parse(data);
+        const userData = await db.getUserData(username);
         
-        if (!users.users[username]) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        
-        res.json(users.users[username].data);
+        res.json({
+            jokers: userData.jokers,
+            recentGames: userData.recentGames
+        });
     } catch (error) {
         console.error('Error reading user data:', error);
-        res.status(500).json({ error: 'Failed to read user data' });
+        res.status(500).json({ error: 'Failed to get user data' });
     }
 });
 
@@ -164,40 +129,25 @@ app.get('/api/users/:username/data', async (req, res) => {
 app.post('/api/users/:username/data', async (req, res) => {
     try {
         const { username } = req.params;
-        const { password, data } = req.body;
+        const { password, jokers, recentGames } = req.body;
         
-        const filePath = path.join(__dirname, 'private', 'users.json');
-        const usersData = await fs.readFile(filePath, 'utf8');
-        const users = JSON.parse(usersData);
-        
-        if (!users.users[username]) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        
-        if (users.users[username].password !== password) {
-            return res.status(401).json({ error: 'Invalid password' });
-        }
-        
-        users.users[username].data = {
-            ...data,
-            lastUpdated: new Date().toISOString()
-        };
-        users.lastUpdated = new Date().toISOString();
-        
-        await fs.writeFile(filePath, JSON.stringify(users, null, 2));
+        await db.saveUserData(username, jokers, recentGames, password);
         res.json({ success: true });
     } catch (error) {
         console.error('Error saving user data:', error);
-        res.status(500).json({ error: 'Failed to save user data' });
+        if (error.message === 'Invalid password') {
+            res.status(401).json({ error: 'Invalid password' });
+        } else {
+            res.status(500).json({ error: 'Failed to save user data' });
+        }
     }
 });
 
 // Legacy endpoints for backward compatibility
 app.get('/data/stakes.json', async (req, res) => {
     try {
-        const filePath = path.join(__dirname, 'data', 'stakes.json');
-        const data = await fs.readFile(filePath, 'utf8');
-        res.json(JSON.parse(data));
+        // Return empty data for legacy compatibility
+        res.json({ lastUpdated: '', jokers: [] });
     } catch (error) {
         console.error('Error reading stakes:', error);
         res.status(500).json({ error: 'Failed to read stakes' });
@@ -206,9 +156,7 @@ app.get('/data/stakes.json', async (req, res) => {
 
 app.post('/save-stakes', async (req, res) => {
     try {
-        const data = req.body;
-        const filePath = path.join(__dirname, 'data', 'stakes.json');
-        await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+        // Legacy endpoint - just return success
         res.json({ success: true });
     } catch (error) {
         console.error('Error saving stakes:', error);
@@ -218,4 +166,6 @@ app.post('/save-stakes', async (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log('Database: PostgreSQL (Neon)');
 }); 
