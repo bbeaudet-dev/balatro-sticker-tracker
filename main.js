@@ -23,7 +23,7 @@ let recentGames = [];
 
 // naneinf tracking
 let naneinfGames = [];
-const NANEINF_TARGET = 1.80e308; // 1.80 × 10^308
+const NANEINF_TARGET_EXPONENT = 308; // Target exponent for 1.80 × 10^308
 const NANEINF_CURRENT = 3.984e115; // 3.984 × 10^115
 
 // Stake types
@@ -1412,21 +1412,59 @@ function switchTab(tabId) {
 
 // naneinf page functions
 function initializeNaneinfPage() {
-    // Add sample naneinf games
+    // Add actual naneinf games with real data
     naneinfGames = [
         {
             id: 1,
-            date: '2025-01-15',
+            date: '2025-09-09',
             score: 3.984e115,
-            media: [],
-            notes: 'First attempt at naneinf. Managed to get a decent score but still far from the target. Need to work on better joker combinations and deck building strategies.'
+            media: [
+                {
+                    type: 'video',
+                    url: 'assets/videos/9_9_25.mp4',
+                    name: '9_9_25.mp4'
+                }
+            ],
+            notes: 'This score could\'ve been 2.888 e173 if I had properly played The Serpent / if the score requirement was higher, and the score could\'ve been 3.426 e193 or higher if I had found the Observatory.'
         },
         {
             id: 2,
-            date: '2025-01-14',
-            score: 2.1e110,
-            media: [],
-            notes: 'Tried a different approach with more focus on multiplier jokers. Got close to my previous high but still need to optimize the build.'
+            date: '2025-09-08',
+            score: 6.848e42,
+            media: [
+                {
+                    type: 'video',
+                    url: 'assets/videos/9_8_25.mp4',
+                    name: '9_8_25.mp4'
+                }
+            ],
+            notes: 'First time getting 4 Blueprints/Brainstorms'
+        },
+        {
+            id: 3,
+            date: '2025-09-05',
+            score: 1.148e66,
+            media: [
+                {
+                    type: 'video',
+                    url: 'assets/videos/9_5_25.mp4',
+                    name: '9_5_25.mp4'
+                }
+            ],
+            notes: 'New high score but never got the 6th/7th Joker slots'
+        },
+        {
+            id: 4,
+            date: '2025-09-04',
+            score: 8.496e53,
+            media: [
+                {
+                    type: 'video',
+                    url: 'assets/videos/9_4_25.mp4',
+                    name: '9_4_25.mp4'
+                }
+            ],
+            notes: 'Got this far after my first few days of attempts. e^53 is still a long way off, but this still blew my previous high score out of the water, somewhere around e^21'
         }
     ];
     
@@ -1439,10 +1477,23 @@ function initializeNaneinfPage() {
         addBtn.onclick = showAddNaneinfGameDialog;
         naneinfSection.appendChild(addBtn);
     }
+    
+    // Render the games and update progress
+    renderNaneinfGames();
+    updateNaneinfProgress();
 }
 
 function updateNaneinfProgress() {
-    const progress = (NANEINF_CURRENT / NANEINF_TARGET) * 100;
+    // Find the highest score from recent games
+    const highestScore = naneinfGames.length > 0 ? 
+        Math.max(...naneinfGames.map(game => game.score)) : 
+        NANEINF_CURRENT;
+    
+    // Calculate progress based on exponents (115/308 instead of actual score ratio)
+    const currentExponent = Math.log10(highestScore);
+    const targetExponent = NANEINF_TARGET_EXPONENT;
+    const progress = (currentExponent / targetExponent) * 100;
+    
     const progressBar = document.getElementById('naneinfProgress');
     const progressPercent = document.getElementById('naneinfPercent');
     const progressText = document.getElementById('naneinfProgressText');
@@ -1452,11 +1503,12 @@ function updateNaneinfProgress() {
     }
     
     if (progressPercent) {
-        progressPercent.textContent = `${(progress * 1e-10).toFixed(2)}e-10%`; // Show in scientific notation
+        progressPercent.textContent = `${progress.toFixed(1)}%`;
     }
     
     if (progressText) {
-        progressText.textContent = `3.984 × 10¹¹⁵ / 1.80 × 10³⁰⁸`;
+        const formattedHighest = highestScore.toExponential(3).replace('e+', 'e');
+        progressText.textContent = `Current High: ${formattedHighest} / Target: 1.800e308+`;
     }
 }
 
@@ -1496,30 +1548,20 @@ function createNaneinfGameElement(game) {
                 mediaHTML += `
                     <div class="naneinfMediaItem">
                         <img src="${mediaItem.url}" alt="Screenshot ${index + 1}">
-                        <button class="removeMedia" onclick="removeNaneinfMedia(${game.id}, ${index})">×</button>
                     </div>
                 `;
             } else if (mediaItem.type === 'video') {
                 mediaHTML += `
                     <div class="naneinfMediaItem">
-                        <video controls>
+                        <video controls preload="metadata" style="max-width: 100%; height: auto;">
                             <source src="${mediaItem.url}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
-                        <button class="removeMedia" onclick="removeNaneinfMedia(${game.id}, ${index})">×</button>
                     </div>
                 `;
             }
         });
     }
-    
-    // Add media upload area
-    mediaHTML += `
-        <div class="naneinfMediaUpload" onclick="uploadNaneinfMedia(${game.id})">
-            <p>📷 Click to add screenshots or videos</p>
-            <p style="font-size: 0.8em; color: #666;">Drag & drop or click to upload</p>
-        </div>
-    `;
     
     // Add action buttons
     const actionButtons = `
@@ -1631,50 +1673,5 @@ function deleteNaneinfGame(gameId) {
         naneinfGames = naneinfGames.filter(g => g.id !== gameId);
         renderNaneinfGames();
         alert('Game deleted successfully!');
-    }
-}
-
-function uploadNaneinfMedia(gameId) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*,video/*';
-    input.multiple = true;
-    
-    input.onchange = function(event) {
-        const files = Array.from(event.target.files);
-        const game = naneinfGames.find(g => g.id === gameId);
-        
-        if (!game) return;
-        
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const mediaItem = {
-                    type: file.type.startsWith('image/') ? 'image' : 'video',
-                    url: e.target.result,
-                    name: file.name
-                };
-                
-                if (!game.media) {
-                    game.media = [];
-                }
-                game.media.push(mediaItem);
-                
-                renderNaneinfGames();
-            };
-            reader.readAsDataURL(file);
-        });
-    };
-    
-    input.click();
-}
-
-function removeNaneinfMedia(gameId, mediaIndex) {
-    const game = naneinfGames.find(g => g.id === gameId);
-    if (!game || !game.media) return;
-    
-    if (confirm('Remove this media item?')) {
-        game.media.splice(mediaIndex, 1);
-        renderNaneinfGames();
     }
 }
