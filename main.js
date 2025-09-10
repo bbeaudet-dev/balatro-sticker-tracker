@@ -26,6 +26,10 @@ let naneinfGames = [];
 const NANEINF_TARGET_EXPONENT = 308; // Target exponent for 1.80 × 10^308
 const NANEINF_CURRENT = 3.984e115; // 3.984 × 10^115
 
+// Deck stakes tracking for completionist+
+let deckData = [];
+let filteredDecks = [];
+
 // Stake types
 const stakeTypes = [
     'noStake',
@@ -84,6 +88,7 @@ function processDescription(description, jokerValue = 0) {
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
     initializeJokerData();
+    initializeDeckData();
     
     // Show loading state immediately
     renderBoardList();
@@ -479,6 +484,29 @@ function initializeJokerData() {
     
     // Initialize with collection order sorting
     filteredJokers = [...jokerData].sort((a, b) => a.collectionOrder - b.collectionOrder);
+}
+
+// Initialize deck data for completionist+ page
+function initializeDeckData() {
+    deckData = [
+        { id: 0, name: 'Red Deck', position: [1, 1], stakeSticker: 'goldStake' }, // c1r1
+        { id: 1, name: 'Blue Deck', position: [3, 1], stakeSticker: 'goldStake' }, // c1r3
+        { id: 2, name: 'Yellow Deck', position: [3, 2], stakeSticker: 'goldStake' }, // c2r3
+        { id: 3, name: 'Green Deck', position: [3, 3], stakeSticker: 'goldStake' }, // c3r3
+        { id: 4, name: 'Black Deck', position: [3, 4], stakeSticker: 'goldStake' }, // c4r3
+        { id: 5, name: 'Magic Deck', position: [4, 1], stakeSticker: 'goldStake' }, // c1r4
+        { id: 6, name: 'Nebula Deck', position: [1, 4], stakeSticker: 'goldStake' }, // c4r1
+        { id: 7, name: 'Ghost Deck', position: [3, 7], stakeSticker: 'goldStake' }, // c7r3
+        { id: 8, name: 'Abandoned Deck', position: [4, 4], stakeSticker: 'goldStake' }, // c4r4
+        { id: 9, name: 'Checkered Deck', position: [4, 2], stakeSticker: 'goldStake' }, // c2r4
+        { id: 10, name: 'Zodiac Deck', position: [5, 4], stakeSticker: 'goldStake' }, // c4r5
+        { id: 11, name: 'Painted Deck', position: [4, 5], stakeSticker: 'goldStake' }, // c5r4
+        { id: 12, name: 'Anaglyph Deck', position: [5, 3], stakeSticker: 'goldStake' }, // c3r5
+        { id: 13, name: 'Plasma Deck', position: [3, 5], stakeSticker: 'goldStake' }, // c5r3
+        { id: 14, name: 'Erratic Deck', position: [4, 3], stakeSticker: 'goldStake' } // c3r4
+    ];
+    
+    filteredDecks = [...deckData];
 }
 
 // Generate joker string for display with stake sticker
@@ -1076,6 +1104,289 @@ function createJokerCardComponent(jokerName, stakeType = 'noStake', size = 'norm
     return cardHTML;
 }
 
+// ===== DECK TRACKING FUNCTIONS FOR COMPLETIONIST+ =====
+
+// Generate deck string for display with stake sticker
+function deckString(i, j, stakeType = 'noStake') {
+    // The Enhancers.png sprite sheet is 7x5 grid, each deck is 96x128px (35% bigger)
+    const cardWidth = 96;
+    const cardHeight = 128;
+    
+    // Calculate positions (i = row, j = column, adjusting for 0-based indexing)
+    const xPos = (j - 1) * cardWidth;  // j is column (x position)
+    const yPos = (i - 1) * cardHeight; // i is row (y position)
+    
+    return `background-position: -${xPos}px -${yPos}px;`;
+}
+
+// Create a deck element
+function createDeckElement(deck) {
+    const div = document.createElement('div');
+    div.className = 'deckItem';
+    
+    const [i, j] = deck.position;
+    const deckStringValue = deckString(i, j, deck.stakeSticker);
+    
+    div.innerHTML = `
+        <div class="tooltip">
+            <div class="deckCard" style="${deckStringValue}" data-stake="${deck.stakeSticker}" onclick="handleDeckClick(${deck.id})"></div>
+            <span class="tooltiptext hover-only">
+                <div class="title">${deck.name}</div>
+            </span>
+            <span class="tooltiptext click-only">
+                <div class="title">${deck.name}</div>
+                <div class="desc">Click to set stake level</div>
+            </span>
+        </div>
+        <div class="stakeEditor" id="deckStakeEditor-${deck.id}" style="display: none;">
+            <div class="stakeEditorButtons">
+                ${stakeTypes.map(stakeType => {
+                    const isActive = deck.stakeSticker === stakeType;
+                    return `<div class="stickerBtn ${stakeType} ${isActive ? 'active' : ''}" 
+                                 onclick="setDeckStakeSticker(${deck.id}, '${stakeType}')" 
+                                 title="${getStakeDisplayName(stakeType)}"></div>`;
+                }).join('')}
+            </div>
+        </div>
+    `;
+    
+    return div;
+}
+
+// Handle deck click
+function handleDeckClick(deckId) {
+    if (!canEdit) {
+        showLoginDialog();
+        return;
+    }
+    
+    // Hide all other stake editors
+    document.querySelectorAll('.stakeEditor').forEach(editor => {
+        editor.style.display = 'none';
+    });
+    
+    // Show this deck's stake editor
+    const editor = document.getElementById(`deckStakeEditor-${deckId}`);
+    if (editor) {
+        editor.style.display = 'block';
+    }
+}
+
+// Set stake sticker for a deck
+function setDeckStakeSticker(deckId, stakeType) {
+    if (!canEdit) {
+        showLoginDialog();
+        return;
+    }
+    
+    const deck = deckData.find(d => d.id === deckId);
+    if (deck) {
+        const editor = document.getElementById(`deckStakeEditor-${deckId}`);
+        if (editor) {
+            // Update the deck's stake
+            deck.stakeSticker = stakeType;
+            
+            // Update the deck card display
+            const deckCard = editor.previousElementSibling.querySelector('.deckCard');
+            if (deckCard) {
+                deckCard.setAttribute('data-stake', stakeType);
+            }
+            
+            // Update button states
+            editor.querySelectorAll('.stickerBtn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            editor.querySelector(`.stickerBtn.${stakeType}`).classList.add('active');
+            
+            // Hide the editor
+            editor.style.display = 'none';
+            
+            // Save data and update stats
+            saveDeckData();
+            updateDeckStats();
+        }
+    }
+}
+
+// Hide deck stake editor
+function hideDeckStakeEditor(deckId) {
+    const editor = document.getElementById(`deckStakeEditor-${deckId}`);
+    if (editor) {
+        editor.style.display = 'none';
+    }
+}
+
+// Render deck grid for completionist+ page
+function renderDeckGrid() {
+    const container = document.getElementById('deckGrid');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    filteredDecks.forEach(deck => {
+        const deckElement = createDeckElement(deck);
+        container.appendChild(deckElement);
+    });
+}
+
+// Update deck statistics
+function updateDeckStats() {
+    const totalDecks = deckData.length;
+    
+    // Define stake levels in ascending order
+    const stakeLevels = {
+        'noStake': 0,
+        'whiteStake': 1,
+        'redStake': 2,
+        'greenStake': 3,
+        'blueStake': 4,
+        'blackStake': 5,
+        'purpleStake': 6,
+        'orangeStake': 7,
+        'goldStake': 8
+    };
+    
+    // Count decks at or above each stake level (cumulative progress)
+    const noStakeCount = deckData.filter(d => d.stakeSticker === 'noStake').length;
+    const whiteStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['whiteStake']).length;
+    const redStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['redStake']).length;
+    const greenStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['greenStake']).length;
+    const blueStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['blueStake']).length;
+    const blackStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['blackStake']).length;
+    const purpleStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['purpleStake']).length;
+    const orangeStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['orangeStake']).length;
+    const goldStakeCount = deckData.filter(d => stakeLevels[d.stakeSticker] >= stakeLevels['goldStake']).length;
+    
+    // Calculate overall progress using Balatro scoring system
+    const stakeValues = {
+        'noStake': 0,
+        'whiteStake': 1,
+        'redStake': 2,
+        'greenStake': 3,
+        'blueStake': 4,
+        'blackStake': 5,
+        'purpleStake': 6,
+        'orangeStake': 7,
+        'goldStake': 8
+    };
+    
+    const overallProgress = deckData.reduce((total, deck) => total + stakeValues[deck.stakeSticker], 0);
+    const maxPossible = totalDecks * 8; // 8 is the highest stake value (gold)
+    const progressPercentage = maxPossible > 0 ? (overallProgress / maxPossible) * 100 : 0;
+    
+    // Update the statistics display
+    const statsContainer = document.getElementById('deckStats');
+    if (statsContainer) {
+        statsContainer.innerHTML = `
+            <div class="statItem">
+                <span class="statLabel">Total Decks:</span>
+                <span class="statValue">${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Overall Progress:</span>
+                <span class="statValue">${progressPercentage.toFixed(1)}%</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Gold Stakes:</span>
+                <span class="statValue">${goldStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Orange Stakes:</span>
+                <span class="statValue">${orangeStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Purple Stakes:</span>
+                <span class="statValue">${purpleStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Black Stakes:</span>
+                <span class="statValue">${blackStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Blue Stakes:</span>
+                <span class="statValue">${blueStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Green Stakes:</span>
+                <span class="statValue">${greenStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">Red Stakes:</span>
+                <span class="statValue">${redStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">White Stakes:</span>
+                <span class="statValue">${whiteStakeCount}/${totalDecks}</span>
+            </div>
+            <div class="statItem">
+                <span class="statLabel">No Stakes:</span>
+                <span class="statValue">${noStakeCount}/${totalDecks}</span>
+            </div>
+        `;
+    }
+    
+    // Update progress bars
+    updateDeckProgressBars(overallProgress, maxPossible, goldStakeCount, totalDecks);
+}
+
+// Update deck progress bars
+function updateDeckProgressBars(overallProgress, maxPossible, goldStakeCount, totalDecks) {
+    // Update overall progress bar
+    const overallPercentage = maxPossible > 0 ? (overallProgress / maxPossible) * 100 : 0;
+    const overallProgressBar = document.getElementById('deckOverallProgress');
+    const overallPercentLabel = document.getElementById('deckOverallPercent');
+    const overallProgressText = document.getElementById('deckOverallProgressText');
+    
+    if (overallProgressBar) {
+        overallProgressBar.style.width = `${overallPercentage}%`;
+    }
+    if (overallPercentLabel) {
+        overallPercentLabel.textContent = `${Math.round(overallPercentage)}%`;
+    }
+    if (overallProgressText) {
+        overallProgressText.textContent = `${overallProgress} / ${maxPossible}`;
+    }
+    
+    // Update gold progress bar
+    const goldPercentage = totalDecks > 0 ? (goldStakeCount / totalDecks) * 100 : 0;
+    const goldProgressBar = document.getElementById('deckGoldProgress');
+    const goldPercentLabel = document.getElementById('deckGoldPercent');
+    const goldProgressText = document.getElementById('deckGoldProgressText');
+    
+    if (goldProgressBar) {
+        goldProgressBar.style.width = `${goldPercentage}%`;
+    }
+    if (goldPercentLabel) {
+        goldPercentLabel.textContent = `${Math.round(goldPercentage)}%`;
+    }
+    if (goldProgressText) {
+        goldProgressText.textContent = `${goldStakeCount} / ${totalDecks}`;
+    }
+}
+
+// Save deck data to localStorage
+function saveDeckData() {
+    if (currentUser) {
+        localStorage.setItem(`deckData_${currentUser}`, JSON.stringify(deckData));
+    }
+}
+
+// Load deck data from localStorage
+function loadDeckData() {
+    if (currentUser) {
+        const saved = localStorage.getItem(`deckData_${currentUser}`);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                deckData = parsed;
+                filteredDecks = [...deckData];
+            } catch (e) {
+                console.error('Error loading deck data:', e);
+            }
+        }
+    }
+}
+
 // Show dialog to add a new game
 function showAddGameDialog() {
     if (!canEdit) {
@@ -1407,6 +1718,10 @@ function switchTab(tabId) {
     if (tabId === 'naneinf') {
         renderNaneinfGames();
         updateNaneinfProgress();
+    } else if (tabId === 'completionist-plus') {
+        loadDeckData();
+        renderDeckGrid();
+        updateDeckStats();
     }
 }
 

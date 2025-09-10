@@ -1814,4 +1814,224 @@ body.gameMode .jokerCard:hover {
   }
 }
 
+/* ===== COMPLETIONIST++ PROGRESS SECTION ===== */
+
+/* Progress section styling for Completionist++ */
+#progressSection {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+#progressSection .progressContainer {
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+}
+
+/* ===== DECK TRACKING STYLES FOR COMPLETIONIST+ ===== */
+
+/* Deck progress bars - centered row layout */
+#deckProgressBars {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+#deckProgressBars .progressContainer {
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+}
+
+/* Deck grid layout */
+.deckGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 96px);
+  grid-template-rows: repeat(3, 128px);
+  gap: 25px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+/* Deck item container */
+.deckItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Deck card styling */
+.deckCard {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 128px;
+  padding: 0;
+  margin: 0;
+  image-rendering: pixelated;
+  cursor: pointer;
+  z-index: 1;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  background-color: transparent;
+  background-image: url(assets/Enhancers.png);
+  background-repeat: no-repeat;
+  background-size: 671px 641px; /* 7x5 grid, each deck is 96x128px (35% bigger) */
+}
+
+.deckCard:hover {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+/* Stake sticker on deck card */
+.deckCard:before {
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 30px;
+  height: 30px;
+  background-size: 150px 60px;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  z-index: 10;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.8));
+}
+
+.deckCard[data-stake="noStake"]:before {
+  display: none;
+}
+
+.deckCard[data-stake="whiteStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: 0px 0px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="redStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -30px 0px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="greenStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -60px 0px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="blueStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -90px 0px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="blackStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -120px 0px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="purpleStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: 0px -30px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="orangeStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -30px -30px;
+  background-size: 150px 60px;
+}
+
+.deckCard[data-stake="goldStake"]:before {
+  background-image: url(assets/chips.png);
+  background-position: -60px -30px;
+  background-size: 150px 60px;
+}
+
+/* Deck statistics section */
+#deckStatsSection {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+#deckStatsSection h2 {
+  color: #f5b143;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#deckStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+#deckStats .statItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #1a1a1a;
+  border-radius: 6px;
+  border-left: 4px solid #f5b143;
+}
+
+#deckStats .statLabel {
+  font-weight: bold;
+  color: #ccc;
+}
+
+#deckStats .statValue {
+  color: #f5b143;
+  font-weight: bold;
+}
+
+/* Deck grid section */
+#deckGridSection {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+#deckGridSection h2 {
+  color: #f5b143;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Responsive design for deck tracking */
+@media (max-width: 768px) {
+  .deckGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  #deckStats {
+    grid-template-columns: 1fr;
+  }
+}
+
 
