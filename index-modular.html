@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Balatro Joker Stake Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preload" href="assets/chips.png" as="image">
+    <meta name="description" content="Track your Balatro joker stake sticker collection">
+    <meta name="keywords" content="Balatro, joker, stake, tracker, collection, gold, orange, purple, black, blue, green, red, white">
+    <meta name="author" content="@benbeau">
+    <meta property="og:title" content="Balatro Joker Stake Tracker">
+    <meta property="og:description" content="Track your Balatro joker stake sticker collection">
+    <meta property="og:url" content="https://bbeaudet-dev.github.io/balatro-sticker-tracker">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0" />
+  </head>
+  <body>
+    <div id="mainContainer">
+      <!-- Navigation Tabs -->
+      <div id="navigationTabs">
+        <button class="navTab" onclick="switchTab('completionist-plus', this)">Completionist+</button>
+        <button class="navTab active" onclick="switchTab('completionist-plus-plus', this)">Completionist++</button>
+        <button class="navTab" onclick="switchTab('naneinf', this)">naneinf</button>
+      </div>
+      
+      <!-- Tab Content will be loaded dynamically -->
+      <div id="tabContent"></div>
+    </div>
+    
+    <!-- Scripts -->
+    <script type="text/javascript" src="hoverCard.js"></script>
+    <script type="text/javascript" src="cards.js"></script>
+    
+    <!-- Modular JavaScript -->
+    <script type="module">
+      // Import and initialize the application
+      import { initializeApp } from './js/core/app.js';
+      
+      // Initialize the application when DOM is loaded
+      document.addEventListener('DOMContentLoaded', async function() {
+        await initializeApp();
+      });
+    </script>
+  </body>
+</html>
