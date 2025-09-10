@@ -1012,9 +1012,9 @@ function addRecentGame(date, jokers) {
     
     recentGames.unshift(newGame); // Add to beginning of array
     
-    // Keep only the last 10 games
-    if (recentGames.length > 10) {
-        recentGames = recentGames.slice(0, 10);
+    // Keep only the last 50 games (increased from 10 to show more history)
+    if (recentGames.length > 50) {
+        recentGames = recentGames.slice(0, 50);
     }
     
     // Update joker stakes based on the game
