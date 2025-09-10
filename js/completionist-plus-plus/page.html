@@ -1,0 +1,135 @@
+<!-- Completionist++ Tab Content -->
+<div id="completionist-plus-plus" class="tabContent active">
+  <!-- Header and Board Selection Section -->
+  <div id="headerBoardSection">
+    <div id="header">
+      <img src="assets/Balatro logo-new.png" alt="Balatro Logo" id="logo">
+      <h1>Completionist++ Tracker</h1>
+    </div>
+  
+  <div id="boardSelection">
+    <div id="boardHeader">
+      <h3>Available Boards</h3>
+    </div>
+    <div id="boardList"></div>
+    <button type="button" id="createBoardBtn" onclick="showCreateBoardDialog()">Create New Board</button>
+  </div>
+</div>
+
+<!-- Combined Progress and Controls Section -->
+<div id="combinedSection">
+  <div id="boardControls">
+    <div id="currentUser">Viewing: <span id="viewingUser">No board selected</span></div>
+    <div id="authStatus">
+      <span id="loginStatus">Edits disabled</span>
+      <button type="button" id="loginBtn" onclick="showLoginDialog()" style="display: none;">Enable Editing</button>
+      <button type="button" id="logoutBtn" onclick="logout()" style="display: none;">Disable Editing</button>
+    </div>
+  </div>
+  
+  <div id="progressContent">
+    <div id="stats">
+      <div class="stat total">
+        <span class="statLabel">Total</span>
+        <span id="totalJokers" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon noStake"></div>
+        <span id="noStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon whiteStake"></div>
+        <span id="whiteStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon redStake"></div>
+        <span id="redStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon greenStake"></div>
+        <span id="greenStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon blueStake"></div>
+        <span id="blueStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon blackStake"></div>
+        <span id="blackStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon purpleStake"></div>
+        <span id="purpleStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon orangeStake"></div>
+        <span id="orangeStakeCount" class="statValue">0</span>
+      </div>
+      <div class="stat">
+        <div class="stakeIcon goldStake"></div>
+        <span id="goldStakeCount" class="statValue">0</span>
+      </div>
+    </div>
+    
+    <div id="progressBars">
+      <div class="progressContainer">
+        <div class="progressLabel">Overall Progress</div>
+        <div class="progressBar">
+          <div class="progressFill" id="overallProgress"></div>
+          <div class="progressPercent" id="overallPercent">0%</div>
+        </div>
+        <div class="progressText" id="overallProgressText">0 / 1200</div>
+      </div>
+      <div class="progressContainer">
+        <div class="progressLabel">Gold Stakes</div>
+        <div class="progressBar">
+          <div class="progressFill gold" id="goldProgress"></div>
+          <div class="progressPercent" id="goldPercent">0%</div>
+        </div>
+        <div class="progressText" id="goldProgressText">0 / 150</div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="filterControls">
+    <div class="searchGroup">
+      <label for="searchInput">Search Jokers:</label>
+      <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterJokers()">
+    </div>
+    
+    <div class="sortGroup">
+      <label>Sort by:</label>
+      <div class="sortButtons">
+        <input type="radio" id="sortName" name="sort" value="name" onchange="sortJokers()">
+        <label for="sortName">Name</label>
+        <input type="radio" id="sortRarity" name="sort" value="rarity" onchange="sortJokers()">
+        <label for="sortRarity">Rarity</label>
+        <input type="radio" id="sortStake" name="sort" value="stake" onchange="sortJokers()">
+        <label for="sortStake">Stake</label>
+        <input type="radio" id="sortCollection" name="sort" value="collection" checked onchange="sortJokers()">
+        <label for="sortCollection">Collection</label>
+      </div>
+    </div>
+    
+    <div class="buttonGroup">
+      <button type="button" id="resetBtn" onclick="resetAllStickers()" style="display: none;">Reset All</button>
+      <button type="button" id="exportBtn" onclick="exportStickerData()" style="display: none;">Export Data</button>
+      <button type="button" id="importBtn" onclick="importStickerData()" style="display: none;">Import Data</button>
+      <button type="button" id="gameModeBtn" onclick="toggleGameMode()" style="display: none;">Game Mode</button>
+      <button type="button" id="updateGameBtn" onclick="updateGameProgress()" style="display: none;">Add Game Results</button>
+    </div>
+  </div>
+</div>
+
+<div id="jokerGrid"></div>
+
+<div id="recentGamesSection">
+  <h2>Recent Games</h2>
+  <div id="recentGamesList"></div>
+</div>
+
+<div id="footer">
+  <a href='https://www.playbalatro.com/' alt='Balatro Website'><img src='assets/Balatro logo-new.png' style='height: 3em;'></a><br>
+  <a href='https://www.github.com/bbeaudet-dev/balatro-sticker-tracker'>view code on GitHub</a>
+</div>
+</div>
